@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseFirestore
 import FirebaseAuth
+import SideMenu
 
 class PrincipalViewController: UIViewController {
 
@@ -20,11 +21,20 @@ class PrincipalViewController: UIViewController {
     var typeOfUser = ""
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
     }
     
+    @IBAction func homeButton(_ sender: Any) {
+        let LeftMenuNavigationController = storyboard!.instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! SideMenuNavigationController
+        
+        LeftMenuNavigationController.leftSide = true
+        LeftMenuNavigationController.statusBarEndAlpha = 0
+        
+        present(LeftMenuNavigationController, animated: true, completion: nil)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
+        
         let db = Firestore.firestore()
         let userID = Auth.auth().currentUser?.uid
         
@@ -48,16 +58,24 @@ class PrincipalViewController: UIViewController {
             }
         }
     }
+
+}
+
+extension PrincipalViewController: SideMenuNavigationControllerDelegate {
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func sideMenuWillAppear(menu: SideMenuNavigationController, animated: Bool) {
+        print("SideMenu Appearing! (animated: \(animated))")
     }
-    */
-
+    
+    func sideMenuDidAppear(menu: SideMenuNavigationController, animated: Bool) {
+        print("SideMenu Appeared! (animated: \(animated))")
+    }
+    
+    func sideMenuWillDisappear(menu: SideMenuNavigationController, animated: Bool) {
+        print("SideMenu Disappearing! (animated: \(animated))")
+    }
+    
+    func sideMenuDidDisappear(menu: SideMenuNavigationController, animated: Bool) {
+        print("SideMenu Disappeared! (animated: \(animated))")
+    }
 }

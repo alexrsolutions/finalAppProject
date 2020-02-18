@@ -36,13 +36,13 @@ class ViewController: UIViewController {
         Auth.auth().signIn(withEmail: username, password: password) { (users, error) in
             if users != nil{
                 // Safe Present
-                
-                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "principalView") as? PrincipalViewController
+                self.performSegue(withIdentifier: "login", sender: self)
+                /*if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "principalView") as? PrincipalViewController
                 {
                     vc.modalPresentationStyle = .fullScreen
                     
                     self.present(vc, animated: true, completion: nil)
-                }
+                }*/
             }else{
                 self.errorLabel.isHidden = false
                 self.errorLabel.text = "Email or Password Incorrect. Try Again."
