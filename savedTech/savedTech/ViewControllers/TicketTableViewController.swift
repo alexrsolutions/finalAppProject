@@ -16,19 +16,7 @@ class TicketTableViewController: UITableViewController {
     var tickets: [String] = []
     
     override func viewWillAppear(_ animated: Bool) {
-        let docRef = db.collection("tickets")
-        docRef.getDocuments(completion: { (documents, error) in
-            if error != nil{
-                print(error!)
-            } else {
-                for document in (documents?.documents)!{
-                    if let id_Number = document.data()["id_Number"] as? String{
-                        self.tickets.append(id_Number)
-                    }
-                }
-            }
-            self.tableView.reloadData()
-        })
+       
     }
     
     override func viewDidLoad() {

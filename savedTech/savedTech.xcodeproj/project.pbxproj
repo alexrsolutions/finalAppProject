@@ -9,8 +9,9 @@
 /* Begin PBXBuildFile section */
 		0B994D8C92E8895A1CFC17DE /* Pods_savedTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98E3464EBBE40A1CEB33FF6D /* Pods_savedTech.framework */; };
 		5D2C14AA23FB6D2A00B75491 /* TicketRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2C14A923FB6D2A00B75491 /* TicketRegisterViewController.swift */; };
-		5D2C14AC23FB6D6100B75491 /* TicketTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2C14AB23FB6D6100B75491 /* TicketTableViewController.swift */; };
 		5D44FF6B23F0A973007A6C14 /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D44FF6A23F0A973007A6C14 /* SideMenuTableViewController.swift */; };
+		5DB804FC2402F82F00A89298 /* plus_Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 5DB804FB2402F82F00A89298 /* plus_Button.png */; };
+		5DB8050024033FC100A89298 /* TicketMantenimientoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB804FF24033FC100A89298 /* TicketMantenimientoViewController.swift */; };
 		5DD6D18123E72DB900835379 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD6D18023E72DB900835379 /* AppDelegate.swift */; };
 		5DD6D18323E72DB900835379 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD6D18223E72DB900835379 /* SceneDelegate.swift */; };
 		5DD6D18523E72DB900835379 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD6D18423E72DB900835379 /* ViewController.swift */; };
@@ -46,8 +47,9 @@
 /* Begin PBXFileReference section */
 		0031BA8BFDFC5C7AF00F53FA /* Pods-savedTech.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-savedTech.debug.xcconfig"; path = "Target Support Files/Pods-savedTech/Pods-savedTech.debug.xcconfig"; sourceTree = "<group>"; };
 		5D2C14A923FB6D2A00B75491 /* TicketRegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketRegisterViewController.swift; sourceTree = "<group>"; };
-		5D2C14AB23FB6D6100B75491 /* TicketTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketTableViewController.swift; sourceTree = "<group>"; };
 		5D44FF6A23F0A973007A6C14 /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
+		5DB804FB2402F82F00A89298 /* plus_Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus_Button.png; sourceTree = "<group>"; };
+		5DB804FF24033FC100A89298 /* TicketMantenimientoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketMantenimientoViewController.swift; sourceTree = "<group>"; };
 		5DD6D17D23E72DB900835379 /* savedTech.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = savedTech.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DD6D18023E72DB900835379 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5DD6D18223E72DB900835379 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -106,6 +108,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		5DB804FA2402F81D00A89298 /* Photos */ = {
+			isa = PBXGroup;
+			children = (
+				5DB804FB2402F82F00A89298 /* plus_Button.png */,
+			);
+			path = Photos;
+			sourceTree = "<group>";
+		};
 		5DD6D17423E72DB900835379 = {
 			isa = PBXGroup;
 			children = (
@@ -132,6 +142,7 @@
 		5DD6D17F23E72DB900835379 /* savedTech */ = {
 			isa = PBXGroup;
 			children = (
+				5DB804FA2402F81D00A89298 /* Photos */,
 				5DD6D18023E72DB900835379 /* AppDelegate.swift */,
 				5DD6D18223E72DB900835379 /* SceneDelegate.swift */,
 				5DD6D1BD23E7870500835379 /* ViewControllers */,
@@ -179,7 +190,7 @@
 				5D44FF6A23F0A973007A6C14 /* SideMenuTableViewController.swift */,
 				5DD6D18423E72DB900835379 /* ViewController.swift */,
 				5D2C14A923FB6D2A00B75491 /* TicketRegisterViewController.swift */,
-				5D2C14AB23FB6D6100B75491 /* TicketTableViewController.swift */,
+				5DB804FF24033FC100A89298 /* TicketMantenimientoViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -299,6 +310,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DD6D18D23E72DBA00835379 /* LaunchScreen.storyboard in Resources */,
+				5DB804FC2402F82F00A89298 /* plus_Button.png in Resources */,
 				5DD6D1B423E730B300835379 /* GoogleService-Info.plist in Resources */,
 				5DD6D18A23E72DBA00835379 /* Assets.xcassets in Resources */,
 				5DD6D1B823E777E600835379 /* Menu-512.png in Resources */,
@@ -375,7 +387,7 @@
 				5DD6D18123E72DB900835379 /* AppDelegate.swift in Sources */,
 				5DD6D1BA23E7809C00835379 /* ForgotViewController.swift in Sources */,
 				5DD6D1BC23E786FC00835379 /* RegisterUserViewController.swift in Sources */,
-				5D2C14AC23FB6D6100B75491 /* TicketTableViewController.swift in Sources */,
+				5DB8050024033FC100A89298 /* TicketMantenimientoViewController.swift in Sources */,
 				5DD6D18323E72DB900835379 /* SceneDelegate.swift in Sources */,
 				5D44FF6B23F0A973007A6C14 /* SideMenuTableViewController.swift in Sources */,
 			);
@@ -482,7 +494,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -536,7 +548,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

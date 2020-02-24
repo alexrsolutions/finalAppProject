@@ -11,17 +11,26 @@ import FirebaseFirestore
 import FirebaseAuth
 import SideMenu
 
-class PrincipalViewController: UIViewController {
-
-    @IBOutlet weak var nombreLbl: UILabel!
-    @IBOutlet weak var userTypeLbl: UILabel!
-    @IBOutlet weak var emailLbl: UILabel!
-    @IBOutlet weak var registerBtn: UIButton!
+class PrincipalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    let db = Firestore.firestore()
+    var userID = Auth.auth().currentUser?.uid
+    var clientes: [String] = []
+    var tickets: [String] = []
+    
+    @IBOutlet weak var welcomeView: UIView!
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var welcomeLbl: UILabel!
     
     var typeOfUser = ""
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(verTickets), name: Notification.Name("ver_Tickets"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(verClientes), name: Notification.Name("ver_Clientes"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(registerUsers), name: Notification.Name("registerUsers"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(registerMachine), name: Notification.Name("registerMachine"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ticketMaintain), name: Notification.Name("ticketMaintain"), object: nil)
     }
     
     @IBAction func homeButton(_ sender: Any) {
@@ -34,48 +43,121 @@ class PrincipalViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
-        let db = Firestore.firestore()
-        let userID = Auth.auth().currentUser?.uid
-        
-        let docRef = db.collection("users").document(userID ?? "")
-
-        docRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                let email = document.data()?["email"] as? String
-                self.typeOfUser = document.data()?["type_user"] as? String ?? ""
-                let name = document.data()?["username"] as? String
-                //let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-                
-                self.nombreLbl.text = name
-                self.emailLbl.text = email
-                self.userTypeLbl.text = self.typeOfUser
-                
-                if self.typeOfUser != "admin" { self.registerBtn.isHidden = true }
-                
-            } else {
-                print("Document does not exist")
+        let userdata = db.collection("users").document(userID ?? "")
+        userdata.addSnapshotListener({ (snapshot, error ) in
+            if error != nil {
+                print("Error: \(error!)")
+            }else if let doc = snapshot {
+                let welcomeName = doc.get("username") ?? "No Name"
+                self.welcomeLbl.text = "WELCOME: \(welcomeName as? String ?? "")"
             }
+        })
+    }
+    
+    //Functions for basic activities Admin
+    
+    @objc func ticketMaintain(notification: NSNotification){
+        welcomeView.isHidden = true
+        guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ticketMaintain") as? TicketMantenimientoViewController else {
+            print("View controller could not be instantiated")
+            return
         }
+        
+        VC.modalPresentationStyle = .popover
+        self.present(VC, animated: true, completion: nil)
+    }
+    
+    @objc func registerMachine(notification: NSNotification){
+        welcomeView.isHidden = true
+        guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "registerMachine") as? TicketRegisterViewController else {
+            print("View controller could not be instantiated")
+            return
+        }
+        
+        VC.modalPresentationStyle = .popover
+        self.present(VC, animated: true, completion: nil)
+    }
+    
+    @objc func registerUsers(notification: NSNotification){
+        welcomeView.isHidden = true
+        guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "registerUser") as? RegisterUserViewController else {
+            print("View controller could not be instantiated")
+            return
+        }
+        
+        VC.modalPresentationStyle = .popover
+        self.present(VC, animated: true, completion: nil)
+    }
+    
+    @objc func verTickets (notification: NSNotification){
+        clientes = []
+        tickets = []
+        welcomeView.isHidden = true
+        let docRef = db.collection("tickets")
+        docRef.getDocuments(completion: { (documents, error) in
+            if error != nil{
+                print(error!)
+            } else {
+                for document in (documents?.documents)!{
+                    if let id_Number = document.data()["id_Number"] as? String{
+                        self.tickets.append(id_Number)
+                    }
+                }
+            }
+            self.tableView.reloadData()
+           })
+    }
+    
+    @objc func verClientes (notification: NSNotification){
+        clientes = []
+        tickets = []
+        welcomeView.isHidden = true
+        let docRef = db.collection("users")
+        docRef.getDocuments(completion: { (documents, error) in
+            if error != nil{
+                print(error!)
+            } else {
+                for document in (documents?.documents)!{
+                    let userType = document.data()["type_user"] as? String
+                    if userType == "user" {
+                        if let username = document.data()["username"] as? String {
+                            self.clientes.append(username)
+                        }
+                    }
+                    
+                }
+            }
+            self.tableView.reloadData()
+        })
+    }
+    
+    //Table View
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        var numberOfRows = 0
+        
+        if clientes.count > 0 {
+            numberOfRows = clientes.count
+        }
+        
+        if tickets.count > 0 {
+            numberOfRows = tickets.count
+        }
+        
+        return numberOfRows
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        
+        if clientes.count > 0 {
+            cell.textLabel?.text = "\(clientes[indexPath.row])"
+        }
+        
+        if tickets.count > 0 {
+            cell.textLabel?.text = "\(tickets[indexPath.row])"
+        }
+        
+        return cell
     }
 
-}
-
-extension PrincipalViewController: SideMenuNavigationControllerDelegate {
-    
-    func sideMenuWillAppear(menu: SideMenuNavigationController, animated: Bool) {
-        print("SideMenu Appearing! (animated: \(animated))")
-    }
-    
-    func sideMenuDidAppear(menu: SideMenuNavigationController, animated: Bool) {
-        print("SideMenu Appeared! (animated: \(animated))")
-    }
-    
-    func sideMenuWillDisappear(menu: SideMenuNavigationController, animated: Bool) {
-        print("SideMenu Disappearing! (animated: \(animated))")
-    }
-    
-    func sideMenuDidDisappear(menu: SideMenuNavigationController, animated: Bool) {
-        print("SideMenu Disappeared! (animated: \(animated))")
-    }
 }

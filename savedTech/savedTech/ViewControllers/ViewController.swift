@@ -37,12 +37,6 @@ class ViewController: UIViewController {
             if users != nil{
                 // Safe Present
                 self.performSegue(withIdentifier: "login", sender: self)
-                /*if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "principalView") as? PrincipalViewController
-                {
-                    vc.modalPresentationStyle = .fullScreen
-                    
-                    self.present(vc, animated: true, completion: nil)
-                }*/
             }else{
                 self.errorLabel.isHidden = false
                 self.errorLabel.text = "Email or Password Incorrect. Try Again."
