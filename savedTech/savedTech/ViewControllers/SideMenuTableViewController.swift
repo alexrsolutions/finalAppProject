@@ -11,7 +11,7 @@ import UIKit
 
 class SideMenuTableViewController: UITableViewController {
     
-    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket"]
+    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte"]
     //let delegationData: controlData
     
     override func viewWillAppear(_ animated: Bool) {
@@ -31,6 +31,7 @@ class SideMenuTableViewController: UITableViewController {
     override func viewDidLoad() {
         self.tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         self.tableView.backgroundColor = #colorLiteral(red: 0, green: 0.02853855363, blue: 0.3646980246, alpha: 0.7923085387)
+        print("Type User: \(ModelData.shared.user_type)")
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -79,9 +80,14 @@ class SideMenuTableViewController: UITableViewController {
             NotificationCenter.default.post(name: Notification.Name("registerMachine"), object: nil)
         }
         
-        if textInCell == "Generar Ticket" {
+        if textInCell == "Ver Reportes" {
             dismiss(animated: true, completion: nil)
-            NotificationCenter.default.post(name: Notification.Name("ticketMaintain"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name("seeReports"), object: nil)
+        }
+        
+        if textInCell == "Generar Reporte" {
+            dismiss(animated: true, completion: nil)
+            NotificationCenter.default.post(name: Notification.Name("generateReports"), object: nil)
         }
     }
 }

@@ -11,6 +11,11 @@ import FirebaseFirestore
 import FirebaseAuth
 import SideMenu
 
+class ModelData: NSObject {
+    static let shared: ModelData = ModelData()
+    var user_type = ""
+}
+
 class PrincipalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let db = Firestore.firestore()
@@ -31,6 +36,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         NotificationCenter.default.addObserver(self, selector: #selector(registerUsers), name: Notification.Name("registerUsers"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(registerMachine), name: Notification.Name("registerMachine"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ticketMaintain), name: Notification.Name("ticketMaintain"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(seeReports), name: Notification.Name("seeReports"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(generateReports), name: Notification.Name("generateReports"), object: nil)
+        /*generateReports*/
     }
     
     @IBAction func homeButton(_ sender: Any) {
@@ -48,6 +56,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             if error != nil {
                 print("Error: \(error!)")
             }else if let doc = snapshot {
+                ModelData.shared.user_type = doc.get("type_user") as! String
                 let welcomeName = doc.get("username") ?? "No Name"
                 self.welcomeLbl.text = "WELCOME: \(welcomeName as? String ?? "")"
             }
@@ -129,6 +138,36 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             self.tableView.reloadData()
         })
+    }
+    
+    @objc func seeReports(notification: NSNotification){
+        clientes = []
+        tickets = []
+        welcomeView.isHidden = true
+        let docRef = db.collection("reportes")
+        docRef.getDocuments(completion: { (documents, error) in
+            if error != nil{
+                print(error!)
+            } else {
+                for document in (documents?.documents)!{
+                    if let id_Number = document.data()["descripcion"] as? String{
+                        self.tickets.append(id_Number)
+                    }
+                }
+            }
+            self.tableView.reloadData()
+        })
+    }
+    
+    @objc func generateReports(notification: NSNotification){
+        welcomeView.isHidden = true
+        guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "genReport") as? GenerateReportViewController else {
+            print("View controller could not be instantiated")
+            return
+        }
+        
+        VC.modalPresentationStyle = .popover
+        self.present(VC, animated: true, completion: nil)
     }
     
     //Table View
