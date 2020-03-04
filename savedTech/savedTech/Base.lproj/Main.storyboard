@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
@@ -127,10 +127,10 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="wVB-yT-38C">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.666667938232422"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="wVB-yT-38C" id="xJQ-3I-1fs">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.666667938232422"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -152,6 +152,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CXQ-So-8Pi">
+                                        <rect key="frame" x="184" y="469" width="46" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <connections>
+                                            <segue destination="eVZ-1P-KxD" kind="show" id="EE2-Dj-7YA"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
@@ -175,9 +183,9 @@
                         <viewLayoutGuide key="safeArea" id="R2z-Ak-JpQ"/>
                     </view>
                     <navigationItem key="navigationItem" id="Uix-so-Hmr">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="aLX-L2-CVi">
+                        <barButtonItem key="leftBarButtonItem" title="Item" style="plain" id="aLX-L2-CVi">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="TqX-WA-8CA">
-                                <rect key="frame" x="20" y="15" width="30" height="26"/>
+                                <rect key="frame" x="20" y="15" width="30.333333333333329" height="26"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="house" catalog="system">
@@ -205,63 +213,12 @@
             <objects>
                 <viewController storyboardIdentifier="ticketMaintain" id="eVZ-1P-KxD" customClass="TicketMantenimientoViewController" customModule="savedTech" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lVk-HV-QPJ">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ilU-C6-qUI">
-                                <rect key="frame" x="35" y="489" width="344" height="219"/>
-                                <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Id_Number" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="G2d-lt-Iie">
-                                        <rect key="frame" x="40" y="92" width="264" height="34"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qqH-YY-iqy">
-                                        <rect key="frame" x="96" y="160" width="152" height="34"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="34" id="vfx-jB-a4V"/>
-                                        </constraints>
-                                        <state key="normal" title="Generate Ticket"/>
-                                        <connections>
-                                            <action selector="generateTicket:" destination="eVZ-1P-KxD" eventType="touchUpInside" id="VPO-h5-Eis"/>
-                                        </connections>
-                                    </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KyS-lX-Q11">
-                                        <rect key="frame" x="151" y="37" width="42" height="22"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstItem="qqH-YY-iqy" firstAttribute="centerX" secondItem="G2d-lt-Iie" secondAttribute="centerX" id="DCd-Tj-MQM"/>
-                                    <constraint firstItem="qqH-YY-iqy" firstAttribute="top" secondItem="G2d-lt-Iie" secondAttribute="bottom" constant="34" id="RTO-xq-1Jq"/>
-                                    <constraint firstAttribute="bottom" secondItem="qqH-YY-iqy" secondAttribute="bottom" constant="25" id="TYh-D6-jQX"/>
-                                    <constraint firstItem="G2d-lt-Iie" firstAttribute="leading" secondItem="ilU-C6-qUI" secondAttribute="leading" constant="40" id="ac3-PN-diU"/>
-                                    <constraint firstItem="G2d-lt-Iie" firstAttribute="centerY" secondItem="ilU-C6-qUI" secondAttribute="centerY" id="c5V-SS-Kxs"/>
-                                    <constraint firstItem="KyS-lX-Q11" firstAttribute="centerX" secondItem="ilU-C6-qUI" secondAttribute="centerX" id="df8-8Z-6jr"/>
-                                    <constraint firstItem="qqH-YY-iqy" firstAttribute="leading" secondItem="ilU-C6-qUI" secondAttribute="leading" constant="96" id="g4a-wj-zD8"/>
-                                    <constraint firstItem="KyS-lX-Q11" firstAttribute="top" secondItem="ilU-C6-qUI" secondAttribute="top" constant="37" id="ly8-fB-IKK"/>
-                                    <constraint firstItem="G2d-lt-Iie" firstAttribute="top" secondItem="KyS-lX-Q11" secondAttribute="bottom" constant="34" id="vfC-0G-vbb"/>
-                                    <constraint firstItem="G2d-lt-Iie" firstAttribute="centerX" secondItem="KyS-lX-Q11" secondAttribute="centerX" id="wSZ-w2-aRN"/>
-                                </constraints>
-                            </view>
-                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="ilU-C6-qUI" firstAttribute="top" secondItem="z0V-Ar-YeH" secondAttribute="top" constant="445" id="ECc-fi-csd"/>
-                            <constraint firstItem="ilU-C6-qUI" firstAttribute="centerX" secondItem="lVk-HV-QPJ" secondAttribute="centerX" id="dXG-SC-Sjf"/>
-                            <constraint firstItem="ilU-C6-qUI" firstAttribute="leading" secondItem="z0V-Ar-YeH" secondAttribute="leading" constant="35" id="jI6-46-sMe"/>
-                            <constraint firstItem="z0V-Ar-YeH" firstAttribute="bottom" secondItem="ilU-C6-qUI" secondAttribute="bottom" constant="154" id="rlU-V6-Ugd"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="z0V-Ar-YeH"/>
                     </view>
-                    <connections>
-                        <outlet property="generalLbl" destination="G2d-lt-Iie" id="h3g-YY-xx0"/>
-                        <outlet property="lblToKnow" destination="KyS-lX-Q11" id="8wY-3q-zet"/>
-                        <outlet property="viewForLabel" destination="ilU-C6-qUI" id="lYN-cT-Wmd"/>
-                    </connections>
+                    <navigationItem key="navigationItem" id="zoA-HW-Fma"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2ZJ-d8-zVp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -277,10 +234,10 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="sideIdentifier" id="w8b-c1-HpN">
-                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="w8b-c1-HpN" id="nxs-dB-3uz">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>

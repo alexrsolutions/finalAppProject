@@ -15,16 +15,12 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
 
     let db = Firestore.firestore()
     
-    @IBOutlet weak var generalLbl: UITextField!
-    @IBOutlet weak var viewForLabel: UIView!
-    @IBOutlet weak var lblToKnow: UILabel!
-    
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = UIColor.black
         captureSession = AVCaptureSession()
 
@@ -63,7 +59,7 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
 
         captureSession.startRunning()
     }
-
+    
     func failed() {
         let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
@@ -73,7 +69,6 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         if (captureSession?.isRunning == false) {
             captureSession.startRunning()
         }
@@ -81,12 +76,11 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
         if (captureSession?.isRunning == true) {
             captureSession.stopRunning()
         }
     }
-
+    
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         captureSession.stopRunning()
 
@@ -94,14 +88,16 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            lblToKnow.text = "\(stringValue)"
+            found(code: stringValue)
         }
 
-        dismiss(animated: true)
+        //dismiss(animated: true)
     }
 
     func found(code: String) {
-        print(code)
+        let tickets = self.db.collection("tickets")
+        tickets.document().setData(["id_Number" : code, "id_Ticket" : randomString(length: 9)])
+        print("Se registro dispositivo")
     }
 
     override var prefersStatusBarHidden: Bool {
@@ -111,13 +107,6 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
-    
-    @IBAction func generateTicket(_ sender: Any) {
-        let users = self.db.collection("tickets")
-        
-        users.document().setData(["id_Number" : self.generalLbl.text ?? "", "id_Ticket" : randomString(length: 9)])
-    }
-    
     
     func randomString(length: Int) -> String {
 

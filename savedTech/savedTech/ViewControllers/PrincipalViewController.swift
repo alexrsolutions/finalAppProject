@@ -31,6 +31,15 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        /* para ios 12 */
+        /*let btn1 = UIButton(type: .custom)
+        btn1.setImage(UIImage(named: "homeButton"), for: .normal)
+        btn1.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+        btn1.addTarget(self, action: #selector(openMenu), for: .touchUpInside)
+        let item1 = UIBarButtonItem(customView: btn1)
+        
+        self.navigationItem.rightBarButtonItem = item1*/
+        
         NotificationCenter.default.addObserver(self, selector: #selector(verTickets), name: Notification.Name("ver_Tickets"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(verClientes), name: Notification.Name("ver_Clientes"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(registerUsers), name: Notification.Name("registerUsers"), object: nil)
@@ -39,6 +48,15 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         NotificationCenter.default.addObserver(self, selector: #selector(seeReports), name: Notification.Name("seeReports"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(generateReports), name: Notification.Name("generateReports"), object: nil)
         /*generateReports*/
+    }
+    
+    @objc func openMenu(){
+        let LeftMenuNavigationController = storyboard!.instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! SideMenuNavigationController
+        
+        LeftMenuNavigationController.leftSide = true
+        LeftMenuNavigationController.statusBarEndAlpha = 0
+        
+        present(LeftMenuNavigationController, animated: true, completion: nil)
     }
     
     @IBAction func homeButton(_ sender: Any) {
