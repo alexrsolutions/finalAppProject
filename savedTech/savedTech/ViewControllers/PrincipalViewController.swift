@@ -16,12 +16,18 @@ class ModelData: NSObject {
     var user_type = ""
 }
 
+struct Clientes {
+    var nombre_empresa: String
+    var id_Empresa: String
+}
+
 class PrincipalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let db = Firestore.firestore()
     var userID = Auth.auth().currentUser?.uid
-    var clientes: [String] = []
+    var clientes: [Clientes] = []
     var tickets: [String] = []
+    var reportes: [String] = []
     
     @IBOutlet weak var welcomeView: UIView!
     @IBOutlet weak var tableView: UITableView!
@@ -30,15 +36,6 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     var typeOfUser = ""
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        /* para ios 12 */
-        /*let btn1 = UIButton(type: .custom)
-        btn1.setImage(UIImage(named: "homeButton"), for: .normal)
-        btn1.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
-        btn1.addTarget(self, action: #selector(openMenu), for: .touchUpInside)
-        let item1 = UIBarButtonItem(customView: btn1)
-        
-        self.navigationItem.rightBarButtonItem = item1*/
         
         NotificationCenter.default.addObserver(self, selector: #selector(verTickets), name: Notification.Name("ver_Tickets"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(verClientes), name: Notification.Name("ver_Clientes"), object: nil)
@@ -94,6 +91,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         self.present(VC, animated: true, completion: nil)
     }
     
+    
+    
     @objc func registerMachine(notification: NSNotification){
         welcomeView.isHidden = true
         guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "registerMachine") as? TicketRegisterViewController else {
@@ -119,6 +118,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     @objc func verTickets (notification: NSNotification){
         clientes = []
         tickets = []
+        reportes = []
         welcomeView.isHidden = true
         let docRef = db.collection("tickets")
         docRef.getDocuments(completion: { (documents, error) in
@@ -138,6 +138,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     @objc func verClientes (notification: NSNotification){
         clientes = []
         tickets = []
+        reportes = []
         welcomeView.isHidden = true
         let docRef = db.collection("users")
         docRef.getDocuments(completion: { (documents, error) in
@@ -148,7 +149,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                     let userType = document.data()["type_user"] as? String
                     if userType == "user" {
                         if let username = document.data()["username"] as? String {
-                            self.clientes.append(username)
+                            let idUser = document.data()["id_User"] as? String
+                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? ""))
                         }
                     }
                     
@@ -161,6 +163,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     @objc func seeReports(notification: NSNotification){
         clientes = []
         tickets = []
+        reportes = []
         welcomeView.isHidden = true
         let docRef = db.collection("reportes")
         docRef.getDocuments(completion: { (documents, error) in
@@ -169,7 +172,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             } else {
                 for document in (documents?.documents)!{
                     if let id_Number = document.data()["descripcion"] as? String{
-                        self.tickets.append(id_Number)
+                        self.reportes.append(id_Number)
                     }
                 }
             }
@@ -200,6 +203,10 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             numberOfRows = tickets.count
         }
         
+        if reportes.count > 0 {
+            numberOfRows = reportes.count
+        }
+        
         return numberOfRows
     }
     
@@ -207,14 +214,54 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         let cell = UITableViewCell()
         
         if clientes.count > 0 {
-            cell.textLabel?.text = "\(clientes[indexPath.row])"
+            cell.textLabel?.text = "\(clientes[indexPath.row].nombre_empresa)"
         }
         
         if tickets.count > 0 {
             cell.textLabel?.text = "\(tickets[indexPath.row])"
         }
         
+        if reportes.count > 0 {
+            cell.textLabel?.text = "\(reportes[indexPath.row])"
+        }
+        
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        if clientes.count > 0 {
+            print("Seccion Clientes")
+            
+            guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "showDetails") as? DetailsViewController else {
+                print("View controller could not be instantiated")
+                return
+            }
+            
+            print(clientes[indexPath.row].id_Empresa)
+            db.collection("reportes").whereField("id_Empresa", isEqualTo: clientes[indexPath.row].id_Empresa)
+                .getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            VC.exampleOfReports.append(document.data()["descripcion"] as! String)
+                        }
+                        
+                        VC.modalPresentationStyle = .popover
+                        self.present(VC, animated: true, completion: nil)
+                    }
+            }
+            
+            
+        } else if tickets.count > 0 {
+            print("Seccion Tickets")
+            
+        } else if reportes.count > 0 {
+            print("Seccion Reportes")
+            
+        }
     }
 
 }

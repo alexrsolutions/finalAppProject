@@ -28,7 +28,7 @@ class TicketRegisterViewController: UIViewController {
         let users = self.db.collection("tech")
         
         users.document().setData(["id_Tech" : randomString(length: 7), "marca" : self.marcaInput.text ?? "", "modelo" : self.modeloInput.text ?? "", "procesador" : self.procesadorInput.text ?? "", "almacenamiento" : self.almacenamientoInput.text ?? ""])
-    }
+    }	
     
     func randomString(length: Int) -> String {
 
