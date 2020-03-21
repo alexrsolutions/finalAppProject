@@ -11,7 +11,10 @@ import UIKit
 
 class SideMenuTableViewController: UITableViewController {
     
-    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte"]
+    var arrayControl: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte", "Dar Reseña", "Ver Tecnicos"]
+    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes"]
+    var arrayUser: [String] = ["Ver Reportes", "Generar Reporte", "Dar Reseña"]
+    var arrayTech: [String] = ["Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Dar Reseña"]
     //let delegationData: controlData
     
     override func viewWillAppear(_ animated: Bool) {
@@ -40,15 +43,15 @@ class SideMenuTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayAdmin.count
+        return arrayControl.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //var cell = super.tableView(tableView, cellForRowAt: indexPath) as! UITableViewVibrantCell
         let cell = tableView.dequeueReusableCell(withIdentifier: "sideIdentifier", for: indexPath)
         
-        if arrayAdmin.count > 0 {
-            cell.textLabel?.text = "\(arrayAdmin[indexPath.row])"
+        if arrayControl.count > 0 {
+            cell.textLabel?.text = "\(arrayControl[indexPath.row])"
         }
         
         cell.textLabel?.textColor = UIColor.white
@@ -70,6 +73,11 @@ class SideMenuTableViewController: UITableViewController {
             NotificationCenter.default.post(name: Notification.Name("ver_Clientes"), object: nil)
         }
         
+        if textInCell == "Ver Tecnicos" {
+            dismiss(animated: true, completion: nil)
+            NotificationCenter.default.post(name: Notification.Name("ver_Tecnicos"), object: nil)
+        }
+        
         if textInCell == "Registrar Usuarios" {
             dismiss(animated: true, completion: nil)
             NotificationCenter.default.post(name: Notification.Name("registerUsers"), object: nil)
@@ -88,6 +96,11 @@ class SideMenuTableViewController: UITableViewController {
         if textInCell == "Generar Reporte" {
             dismiss(animated: true, completion: nil)
             NotificationCenter.default.post(name: Notification.Name("generateReports"), object: nil)
+        }
+        
+        if textInCell == "Dar Reseña" {
+            dismiss(animated: true, completion: nil)
+            NotificationCenter.default.post(name: Notification.Name("giveReview"), object: nil)
         }
     }
 }

@@ -14,6 +14,7 @@ import SideMenu
 class ModelData: NSObject {
     static let shared: ModelData = ModelData()
     var user_type = ""
+    var id_User = ""
 }
 
 struct Clientes {
@@ -39,11 +40,13 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         
         NotificationCenter.default.addObserver(self, selector: #selector(verTickets), name: Notification.Name("ver_Tickets"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(verClientes), name: Notification.Name("ver_Clientes"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(verTecnicos), name: Notification.Name("ver_Tecnicos"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(registerUsers), name: Notification.Name("registerUsers"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(registerMachine), name: Notification.Name("registerMachine"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ticketMaintain), name: Notification.Name("ticketMaintain"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(seeReports), name: Notification.Name("seeReports"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(generateReports), name: Notification.Name("generateReports"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(giveReview), name: Notification.Name("giveReview"), object: nil)
         /*generateReports*/
     }
     
@@ -72,6 +75,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 print("Error: \(error!)")
             }else if let doc = snapshot {
                 ModelData.shared.user_type = doc.get("type_user") as! String
+                let idUser = doc.get("id_user") ?? ""
+                ModelData.shared.id_User = idUser as! String
+                print("id_User: \(String(describing: idUser))")
                 let welcomeName = doc.get("username") ?? "No Name"
                 self.welcomeLbl.text = "WELCOME: \(welcomeName as? String ?? "")"
             }
@@ -160,6 +166,31 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         })
     }
     
+    @objc func verTecnicos (notification: NSNotification){
+        clientes = []
+        tickets = []
+        reportes = []
+        welcomeView.isHidden = true
+        let docRef = db.collection("users")
+        docRef.getDocuments(completion: { (documents, error) in
+            if error != nil{
+                print(error!)
+            } else {
+                for document in (documents?.documents)!{
+                    let userType = document.data()["type_user"] as? String
+                    if userType == "tech" {
+                        if let username = document.data()["username"] as? String {
+                            let idUser = document.data()["id_User"] as? String
+                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? ""))
+                        }
+                    }
+                    
+                }
+            }
+            self.tableView.reloadData()
+        })
+    }
+    
     @objc func seeReports(notification: NSNotification){
         clientes = []
         tickets = []
@@ -183,6 +214,16 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     @objc func generateReports(notification: NSNotification){
         welcomeView.isHidden = true
         guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "genReport") as? GenerateReportViewController else {
+            print("View controller could not be instantiated")
+            return
+        }
+        
+        VC.modalPresentationStyle = .popover
+        self.present(VC, animated: true, completion: nil)
+    }
+    
+    @objc func giveReview(notification: NSNotification){
+        guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "giveReview") as? GiveReviewViewController else {
             print("View controller could not be instantiated")
             return
         }
@@ -262,6 +303,41 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             print("Seccion Reportes")
             
         }
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let delete = deleteAction(at: indexPath)
+        return UISwipeActionsConfiguration(actions: [delete])
+    }
+    
+    func deleteAction(at indexPath: IndexPath) -> UIContextualAction{
+        let action = UIContextualAction(style: .destructive, title: "Delete"){ (action, view, completion) in
+            
+            let docRef = self.db.collection("users")
+            var documentIds: String = ""
+            docRef.whereField("id_User", isEqualTo: self.clientes[indexPath.row].id_Empresa).getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            documentIds = document.documentID
+                        }
+                        
+                        docRef.document(documentIds).delete() { err in
+                            if let err = err {
+                                print("Error removing document: \(err)")
+                            } else {
+                                print("Document successfully removed!")
+                            }
+                        }
+                    }
+            }
+            
+            self.clientes.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        action.backgroundColor = #colorLiteral(red: 0.824714467, green: 0.2022622079, blue: 0, alpha: 1)
+        return action
     }
 
 }

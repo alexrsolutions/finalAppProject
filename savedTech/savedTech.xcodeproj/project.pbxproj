@@ -13,6 +13,8 @@
 		5D44FF6B23F0A973007A6C14 /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D44FF6A23F0A973007A6C14 /* SideMenuTableViewController.swift */; };
 		5D5559D8240EA97700245690 /* homeButton.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5D5559D7240EA97700245690 /* homeButton.jpg */; };
 		5D5B21CF240CBAE500969090 /* GenerateReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5B21CE240CBAE500969090 /* GenerateReportViewController.swift */; };
+		5D8656D424268AB0007C58C6 /* GiveReviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8656D324268AB0007C58C6 /* GiveReviewViewController.swift */; };
+		5D8656D62426BA30007C58C6 /* no_computer.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D8656D52426BA30007C58C6 /* no_computer.png */; };
 		5DB804FC2402F82F00A89298 /* plus_Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 5DB804FB2402F82F00A89298 /* plus_Button.png */; };
 		5DB8050024033FC100A89298 /* TicketMantenimientoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB804FF24033FC100A89298 /* TicketMantenimientoViewController.swift */; };
 		5DD6D18123E72DB900835379 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD6D18023E72DB900835379 /* AppDelegate.swift */; };
@@ -54,6 +56,8 @@
 		5D44FF6A23F0A973007A6C14 /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
 		5D5559D7240EA97700245690 /* homeButton.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = homeButton.jpg; sourceTree = "<group>"; };
 		5D5B21CE240CBAE500969090 /* GenerateReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateReportViewController.swift; sourceTree = "<group>"; };
+		5D8656D324268AB0007C58C6 /* GiveReviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiveReviewViewController.swift; sourceTree = "<group>"; };
+		5D8656D52426BA30007C58C6 /* no_computer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = no_computer.png; sourceTree = "<group>"; };
 		5DB804FB2402F82F00A89298 /* plus_Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus_Button.png; sourceTree = "<group>"; };
 		5DB804FF24033FC100A89298 /* TicketMantenimientoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketMantenimientoViewController.swift; sourceTree = "<group>"; };
 		5DD6D17D23E72DB900835379 /* savedTech.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = savedTech.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,6 +121,7 @@
 		5DB804FA2402F81D00A89298 /* Photos */ = {
 			isa = PBXGroup;
 			children = (
+				5D8656D52426BA30007C58C6 /* no_computer.png */,
 				5D5559D7240EA97700245690 /* homeButton.jpg */,
 				5DB804FB2402F82F00A89298 /* plus_Button.png */,
 			);
@@ -200,6 +205,7 @@
 				5DB804FF24033FC100A89298 /* TicketMantenimientoViewController.swift */,
 				5D5B21CE240CBAE500969090 /* GenerateReportViewController.swift */,
 				5D35546624171E3000EA3005 /* DetailsViewController.swift */,
+				5D8656D324268AB0007C58C6 /* GiveReviewViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -321,6 +327,7 @@
 				5DD6D18D23E72DBA00835379 /* LaunchScreen.storyboard in Resources */,
 				5DB804FC2402F82F00A89298 /* plus_Button.png in Resources */,
 				5DD6D1B423E730B300835379 /* GoogleService-Info.plist in Resources */,
+				5D8656D62426BA30007C58C6 /* no_computer.png in Resources */,
 				5D5559D8240EA97700245690 /* homeButton.jpg in Resources */,
 				5DD6D18A23E72DBA00835379 /* Assets.xcassets in Resources */,
 				5DD6D1B823E777E600835379 /* Menu-512.png in Resources */,
@@ -392,6 +399,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DD6D18523E72DB900835379 /* ViewController.swift in Sources */,
+				5D8656D424268AB0007C58C6 /* GiveReviewViewController.swift in Sources */,
 				5D5B21CF240CBAE500969090 /* GenerateReportViewController.swift in Sources */,
 				5D2C14AA23FB6D2A00B75491 /* TicketRegisterViewController.swift in Sources */,
 				5D35546724171E3000EA3005 /* DetailsViewController.swift in Sources */,
