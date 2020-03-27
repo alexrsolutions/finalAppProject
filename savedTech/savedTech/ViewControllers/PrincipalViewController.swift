@@ -33,6 +33,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var welcomeView: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var welcomeLbl: UILabel!
+    @IBOutlet weak var emailLbl: UILabel!
+    @IBOutlet weak var enterpriseLbl: UILabel!
+    @IBOutlet weak var adminBanner: UILabel!
     
     var typeOfUser = ""
     override func viewDidLoad() {
@@ -49,6 +52,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         NotificationCenter.default.addObserver(self, selector: #selector(seeReports), name: Notification.Name("seeReports"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(generateReports), name: Notification.Name("generateReports"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(giveReview), name: Notification.Name("giveReview"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(profile), name: Notification.Name("profile"), object: nil)
         /*generateReports*/
     }
     
@@ -81,7 +85,21 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 ModelData.shared.id_User = idUser as! String
                 print("id_User: \(String(describing: idUser))")
                 let welcomeName = doc.get("username") ?? "No Name"
+                let emailAddress = doc.get("email") ?? "No Name"
+                if ModelData.shared.user_type != "admin" {
+                    let enterprise = doc.get("empresa") ?? "No Name"
+                    self.enterpriseLbl.isHidden = false
+                    self.enterpriseLbl.text = "\(enterprise)"
+                    if ModelData.shared.user_type == "user" {
+                        self.adminBanner.text = "Client"
+                    } else if ModelData.shared.user_type == "tech" {
+                        self.adminBanner.text = "Techie"
+                    }
+                } else {
+                    self.adminBanner.text = "Admin"
+                }
                 self.welcomeLbl.text = "WELCOME: \(welcomeName as? String ?? "")"
+                self.emailLbl.text = "Email: \(emailAddress as? String ?? "")"
             }
         })
     }
@@ -233,6 +251,10 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         self.present(VC, animated: true, completion: nil)
     }
     
+    @objc func profile(notification: NSNotification){
+        welcomeView.isHidden = false
+    }
+    
     //Table View
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var numberOfRows = 0
@@ -307,9 +329,14 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let delete = deleteAction(at: indexPath)
-        let edit = editAction(at: indexPath)
-        return UISwipeActionsConfiguration(actions: [delete, edit])
+        if ModelData.shared.user_type == "admin" {
+            let delete = deleteAction(at: indexPath)
+            let edit = editAction(at: indexPath)
+            let see = seeAction(at: indexPath)
+            return UISwipeActionsConfiguration(actions: [delete, edit, see])
+        } else {
+            return nil
+        }
     }
     
     func deleteAction(at indexPath: IndexPath) -> UIContextualAction{
@@ -343,7 +370,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func editAction(at indexPath: IndexPath) -> UIContextualAction{
-        let action = UIContextualAction(style: .destructive, title: "Delete"){ (action, view, completion) in
+        let action = UIContextualAction(style: .destructive, title: "Edit"){ (action, view, completion) in
             
             let docRef = self.db.collection("users")
             var documentIds: String = ""
@@ -361,6 +388,28 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
         }
         action.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
+        return action
+    }
+    
+    func seeAction(at indexPath: IndexPath) -> UIContextualAction{
+        let action = UIContextualAction(style: .destructive, title: "See"){ (action, view, completion) in
+            
+            let docRef = self.db.collection("users")
+            var documentIds: String = ""
+            docRef.whereField("id_User", isEqualTo: self.clientes[indexPath.row].id_Empresa).getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            documentIds = document.documentID
+                        }
+                    }
+            }
+            
+            self.clientes.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        action.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
         return action
     }
 

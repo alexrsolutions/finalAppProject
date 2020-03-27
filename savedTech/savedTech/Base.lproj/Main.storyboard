@@ -36,7 +36,7 @@
                                 <rect key="frame" x="158" y="492" width="99" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <state key="normal" title="Log In">
                                     <color key="titleColor" systemColor="systemGroupedBackgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -54,7 +54,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="user" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aqy-ot-EAv">
                                 <rect key="frame" x="70" y="535" width="275" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -114,21 +114,56 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ybz-W6-Cdj">
                                 <rect key="frame" x="0.0" y="56" width="414" height="786"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WELCOME:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6bF-Uf-7sn">
-                                        <rect key="frame" x="56" y="177" width="302" height="100"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="WELCOME:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6bF-Uf-7sn">
+                                        <rect key="frame" x="57" y="188" width="301" height="75"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="100" id="2sP-Jt-gVN"/>
+                                            <constraint firstAttribute="height" constant="75" id="2sP-Jt-gVN"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Email: " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YIw-xp-xiC">
+                                        <rect key="frame" x="57" y="278" width="301" height="70"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="70" id="HgH-ky-B4K"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="blank-profile-picture.png" translatesAutoresizingMaskIntoConstraints="NO" id="TtE-Mf-VJN">
+                                        <rect key="frame" x="143" y="52" width="128" height="128"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="128" id="cVT-o0-rcg"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enterprise:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uI5-Nd-rfH">
+                                        <rect key="frame" x="57" y="368" width="301" height="52"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Admin" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ypg-kW-cHZ">
+                                        <rect key="frame" x="183" y="23" width="49" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
-                                    <constraint firstItem="6bF-Uf-7sn" firstAttribute="leading" secondItem="Ybz-W6-Cdj" secondAttribute="leading" constant="56" id="NXY-81-EqY"/>
-                                    <constraint firstItem="6bF-Uf-7sn" firstAttribute="top" secondItem="Ybz-W6-Cdj" secondAttribute="top" constant="177" id="XS5-mg-IeA"/>
+                                    <constraint firstItem="TtE-Mf-VJN" firstAttribute="top" secondItem="Ybz-W6-Cdj" secondAttribute="top" constant="52" id="0ia-ZU-XeM"/>
+                                    <constraint firstItem="YIw-xp-xiC" firstAttribute="leading" secondItem="6bF-Uf-7sn" secondAttribute="leading" id="BqR-RN-CiS"/>
+                                    <constraint firstItem="6bF-Uf-7sn" firstAttribute="leading" secondItem="Ybz-W6-Cdj" secondAttribute="leading" constant="57" id="NXY-81-EqY"/>
+                                    <constraint firstItem="6bF-Uf-7sn" firstAttribute="top" secondItem="TtE-Mf-VJN" secondAttribute="bottom" constant="8" id="UjO-81-S13"/>
+                                    <constraint firstItem="6bF-Uf-7sn" firstAttribute="top" secondItem="Ybz-W6-Cdj" secondAttribute="top" constant="188" id="XS5-mg-IeA"/>
+                                    <constraint firstItem="YIw-xp-xiC" firstAttribute="centerX" secondItem="TtE-Mf-VJN" secondAttribute="centerX" id="XZc-hp-uJC"/>
                                     <constraint firstItem="6bF-Uf-7sn" firstAttribute="centerX" secondItem="Ybz-W6-Cdj" secondAttribute="centerX" id="dOc-0P-mxR"/>
+                                    <constraint firstItem="YIw-xp-xiC" firstAttribute="top" secondItem="6bF-Uf-7sn" secondAttribute="bottom" constant="15" id="pgl-KK-yqZ"/>
+                                    <constraint firstItem="YIw-xp-xiC" firstAttribute="trailing" secondItem="6bF-Uf-7sn" secondAttribute="trailing" id="sRy-7Q-HOu"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -162,6 +197,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="adminBanner" destination="Ypg-kW-cHZ" id="rPP-tU-myK"/>
+                        <outlet property="emailLbl" destination="YIw-xp-xiC" id="eCh-dP-lvO"/>
+                        <outlet property="enterpriseLbl" destination="uI5-Nd-rfH" id="zfV-oa-bZh"/>
                         <outlet property="tableView" destination="1Nv-HX-NcJ" id="ogD-Uj-R3D"/>
                         <outlet property="welcomeLbl" destination="6bF-Uf-7sn" id="gsJ-QY-uSY"/>
                         <outlet property="welcomeView" destination="Ybz-W6-Cdj" id="TMG-VG-1ee"/>
@@ -540,7 +578,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="admin, tech or client" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OUF-Hx-bQu">
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="admin, tech or user" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OUF-Hx-bQu">
                                 <rect key="frame" x="138" y="284" width="243" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -566,6 +604,7 @@
                     <navigationItem key="navigationItem" id="bKw-1A-riA"/>
                     <connections>
                         <outlet property="emailReg" destination="RzO-Tk-cBN" id="EfR-XW-2VT"/>
+                        <outlet property="enterpriseReg" destination="0ak-UI-GQs" id="RSK-CB-aaB"/>
                         <outlet property="nameReg" destination="XXp-x7-n5J" id="jFV-SU-3AS"/>
                         <outlet property="typeReg" destination="OUF-Hx-bQu" id="gsI-3U-cFI"/>
                     </connections>
@@ -773,6 +812,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="blank-profile-picture.png" width="640" height="640"/>
         <image name="house" catalog="system" width="64" height="54"/>
     </resources>
     <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

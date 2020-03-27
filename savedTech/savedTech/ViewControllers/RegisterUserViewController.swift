@@ -18,6 +18,7 @@ class RegisterUserViewController: UIViewController {
     @IBOutlet weak var emailReg: UITextField!
     @IBOutlet weak var nameReg: UITextField!
     @IBOutlet weak var typeReg: UITextField!
+    @IBOutlet weak var enterpriseReg: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,19 +38,26 @@ class RegisterUserViewController: UIViewController {
                 
                 let users = self.db.collection("users")
                 
-                users.document().setData(["email" : self.emailReg.text ?? "", "password" : "savedTech", "type_user" : self.typeReg.text ?? "", "username" : self.nameReg.text ?? ""])
+                users.document().setData(["email" : self.emailReg.text ?? "", "password" : "savedTech", "type_user" : self.typeReg.text ?? "", "username" : self.nameReg.text ?? "", "empresa" : self.enterpriseReg.text ?? "", "id_User" : self.randomString(length: 7)])
                 
             })
         }
     }
-    /*
-    // MARK: - Navigation
+    
+    func randomString(length: Int) -> String {
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let len = UInt32(letters.length)
+
+        var randomString = ""
+
+        for _ in 0 ..< length {
+            let rand = arc4random_uniform(len)
+            var nextChar = letters.character(at: Int(rand))
+            randomString += NSString(characters: &nextChar, length: 1) as String
+        }
+
+        return randomString
     }
-    */
 
 }

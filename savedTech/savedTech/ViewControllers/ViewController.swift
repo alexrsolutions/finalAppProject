@@ -23,12 +23,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
-        /*loginAction.layer.borderWidth = 2
-        loginAction.layer.cornerRadius = loginAction.frame.height/2
-        loginAction.layer.borderColor = UIColor.white.cgColor
-        loginAction.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)*/
-        
         errorLabel.isHidden = true
     }
 
