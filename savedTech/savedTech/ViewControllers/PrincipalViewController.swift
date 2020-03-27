@@ -38,6 +38,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Menu", style: .plain, target: self, action: #selector(openMenu))
+        
         NotificationCenter.default.addObserver(self, selector: #selector(verTickets), name: Notification.Name("ver_Tickets"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(verClientes), name: Notification.Name("ver_Clientes"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(verTecnicos), name: Notification.Name("ver_Tecnicos"), object: nil)
@@ -87,7 +89,6 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     //Functions for basic activities Admin
     
     @objc func ticketMaintain(notification: NSNotification){
-        welcomeView.isHidden = true
         guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ticketMaintain") as? TicketMantenimientoViewController else {
             print("View controller could not be instantiated")
             return
@@ -96,8 +97,6 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         VC.modalPresentationStyle = .popover
         self.present(VC, animated: true, completion: nil)
     }
-    
-    
     
     @objc func registerMachine(notification: NSNotification){
         welcomeView.isHidden = true
@@ -152,6 +151,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 print(error!)
             } else {
                 for document in (documents?.documents)!{
+                    print("Documents: \(document.data())")
                     let userType = document.data()["type_user"] as? String
                     if userType == "user" {
                         if let username = document.data()["username"] as? String {
@@ -161,6 +161,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                     }
                     
                 }
+                print("clientes: \(self.clientes.debugDescription)")
             }
             self.tableView.reloadData()
         })
@@ -307,7 +308,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let delete = deleteAction(at: indexPath)
-        return UISwipeActionsConfiguration(actions: [delete])
+        let edit = editAction(at: indexPath)
+        return UISwipeActionsConfiguration(actions: [delete, edit])
     }
     
     func deleteAction(at indexPath: IndexPath) -> UIContextualAction{
@@ -339,5 +341,28 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         action.backgroundColor = #colorLiteral(red: 0.824714467, green: 0.2022622079, blue: 0, alpha: 1)
         return action
     }
+    
+    func editAction(at indexPath: IndexPath) -> UIContextualAction{
+        let action = UIContextualAction(style: .destructive, title: "Delete"){ (action, view, completion) in
+            
+            let docRef = self.db.collection("users")
+            var documentIds: String = ""
+            docRef.whereField("id_User", isEqualTo: self.clientes[indexPath.row].id_Empresa).getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            documentIds = document.documentID
+                        }
+                    }
+            }
+            
+            self.clientes.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        action.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
+        return action
+    }
+
 
 }

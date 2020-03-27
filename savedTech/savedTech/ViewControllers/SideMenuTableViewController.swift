@@ -43,7 +43,15 @@ class SideMenuTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayControl.count
+        /*if ModelData.shared.user_type == "admin" {
+            return arrayAdmin.count
+        } else if ModelData.shared.user_type == "tech" {
+            return arrayTech.count
+        } else if ModelData.shared.user_type == "user" {
+            return arrayUser.count
+        } else {*/
+            return arrayControl.count
+        //}
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -96,6 +104,11 @@ class SideMenuTableViewController: UITableViewController {
         if textInCell == "Generar Reporte" {
             dismiss(animated: true, completion: nil)
             NotificationCenter.default.post(name: Notification.Name("generateReports"), object: nil)
+        }
+        
+        if textInCell == "Generar Ticket" {
+            dismiss(animated: true, completion: nil)
+            NotificationCenter.default.post(name: Notification.Name("ticketMaintain"), object: nil)
         }
         
         if textInCell == "Dar Reseña" {

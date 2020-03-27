@@ -15,11 +15,20 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
 
     let db = Firestore.firestore()
     
+    @IBOutlet weak var pcIdText: UITextField!
+    
+    @IBOutlet weak var descriptionTickey: UITextView!
+    @IBOutlet weak var nameView: UIView!
+    
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
-
+    
+    let idOfTech = ModelData.shared.user_type
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        nameView.layer.zPosition = 2
         
         view.backgroundColor = UIColor.black
         captureSession = AVCaptureSession()
@@ -81,31 +90,47 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
         }
     }
     
-    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        captureSession.stopRunning()
-
-        if let metadataObject = metadataObjects.first {
-            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-            guard let stringValue = readableObject.stringValue else { return }
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            found(code: stringValue)
+    func metadataOutput(_ captureOutput: AVCaptureMetadataOutput,
+                        didOutput metadataObjects: [AVMetadataObject],
+                        from connection: AVCaptureConnection) {
+        // Check if the metadataObjects array is contains at least one object.
+        if metadataObjects.count == 0 {
+            return
         }
-
-        //dismiss(animated: true)
+        
+        //self.captureSession?.stopRunning()
+        
+        // Get the metadata object.
+        let metadataObj = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
+        
+        if metadataObj.type == AVMetadataObject.ObjectType.qr {
+            if let outputString = metadataObj.stringValue {
+                AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+                DispatchQueue.main.async {
+                    print(outputString)
+                    self.pcIdText.text = outputString
+                }
+            }
+        }
+        
+        captureSession.stopRunning()
     }
-
-    func found(code: String) {
+    
+    @IBAction func genTicket(_ sender: Any) {
+        let date = getCurrentDateTime()
         let tickets = self.db.collection("tickets")
-        tickets.document().setData(["id_Number" : code, "id_Ticket" : randomString(length: 9)])
+        tickets.document().setData(["id_Number" : self.pcIdText.text ?? "", "id_Ticket" : randomString(length: 9), "Date of Serviec" : date, "id_Tech" : idOfTech, "descriptionTicket" : descriptionTickey.text ?? ""])
         print("Se registro dispositivo")
+        dismiss(animated: true)
     }
-
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
+    
+    func getCurrentDateTime() -> String{
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.dateFormat = "EEEE, MMMM,dd,yyyy HH:mm a"
+        let str = formatter.string(from: Date())
+        print("Date: \(str)")
+        return str
     }
     
     func randomString(length: Int) -> String {
@@ -123,15 +148,5 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
 
         return randomString
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
