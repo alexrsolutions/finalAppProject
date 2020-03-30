@@ -332,8 +332,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         if ModelData.shared.user_type == "admin" {
             let delete = deleteAction(at: indexPath)
             let edit = editAction(at: indexPath)
-            let see = seeAction(at: indexPath)
-            return UISwipeActionsConfiguration(actions: [delete, edit, see])
+            return UISwipeActionsConfiguration(actions: [delete, edit])
         } else {
             return nil
         }
@@ -372,46 +371,17 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     func editAction(at indexPath: IndexPath) -> UIContextualAction{
         let action = UIContextualAction(style: .destructive, title: "Edit"){ (action, view, completion) in
             
-            let docRef = self.db.collection("users")
-            var documentIds: String = ""
-            docRef.whereField("id_User", isEqualTo: self.clientes[indexPath.row].id_Empresa).getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        print("Error getting documents: \(err)")
-                    } else {
-                        for document in querySnapshot!.documents {
-                            documentIds = document.documentID
-                        }
-                    }
+            guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editInfo") as? EditInfoViewController else {
+                print("View controller could not be instantiated")
+                return
             }
             
-            self.clientes.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            VC.modalPresentationStyle = .popover
+            self.present(VC, animated: true, completion: nil)
+            
         }
         action.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         return action
     }
-    
-    func seeAction(at indexPath: IndexPath) -> UIContextualAction{
-        let action = UIContextualAction(style: .destructive, title: "See"){ (action, view, completion) in
-            
-            let docRef = self.db.collection("users")
-            var documentIds: String = ""
-            docRef.whereField("id_User", isEqualTo: self.clientes[indexPath.row].id_Empresa).getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        print("Error getting documents: \(err)")
-                    } else {
-                        for document in querySnapshot!.documents {
-                            documentIds = document.documentID
-                        }
-                    }
-            }
-            
-            self.clientes.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
-        }
-        action.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
-        return action
-    }
-
 
 }
