@@ -21,7 +21,14 @@ class TicketRegisterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
+            navigationItem.leftBarButtonItem = backButton
+
+            // Do any additional setup after loading the view.
+    }
+        
+    @objc func goBack(){
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func registerMachine(_ sender: Any) {

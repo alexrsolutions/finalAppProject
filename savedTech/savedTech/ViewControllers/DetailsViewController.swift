@@ -17,6 +17,13 @@ class DetailsViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         tableDetails.reloadData()
         // Do any additional setup after loading the view.
+        
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
+        navigationItem.leftBarButtonItem = backButton
+    }
+    
+    @objc func goBack(){
+        dismiss(animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

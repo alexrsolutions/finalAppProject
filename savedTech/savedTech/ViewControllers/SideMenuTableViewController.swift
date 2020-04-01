@@ -12,9 +12,9 @@ import UIKit
 class SideMenuTableViewController: UITableViewController {
     
     var arrayControl: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte", "Dar Reseña", "Ver Tecnicos", "Perfil"]
-    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes"]
-    var arrayUser: [String] = ["Ver Reportes", "Generar Reporte", "Dar Reseña"]
-    var arrayTech: [String] = ["Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Dar Reseña"]
+    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Ver Reportes", "Perfil"]
+    var arrayUser: [String] = ["Ver Reportes", "Generar Reporte", "Dar Reseña", "Perfil"]
+    var arrayTech: [String] = ["Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Dar Reseña", "Perfil"]
     //let delegationData: controlData
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,23 +43,37 @@ class SideMenuTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        /*if ModelData.shared.user_type == "admin" {
+        if ModelData.shared.user_type == "admin" {
             return arrayAdmin.count
         } else if ModelData.shared.user_type == "tech" {
             return arrayTech.count
         } else if ModelData.shared.user_type == "user" {
             return arrayUser.count
-        } else {*/
+        } else {
             return arrayControl.count
-        //}
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //var cell = super.tableView(tableView, cellForRowAt: indexPath) as! UITableViewVibrantCell
         let cell = tableView.dequeueReusableCell(withIdentifier: "sideIdentifier", for: indexPath)
         
-        if arrayControl.count > 0 {
-            cell.textLabel?.text = "\(arrayControl[indexPath.row])"
+        if ModelData.shared.user_type == "admin" {
+            if arrayAdmin.count > 0 {
+                cell.textLabel?.text = "\(arrayAdmin[indexPath.row])"
+            }
+        } else if ModelData.shared.user_type == "tech" {
+            if arrayTech.count > 0 {
+                cell.textLabel?.text = "\(arrayTech[indexPath.row])"
+            }
+        } else if ModelData.shared.user_type == "user" {
+            if arrayUser.count > 0 {
+                cell.textLabel?.text = "\(arrayUser[indexPath.row])"
+            }
+        } else {
+            if arrayControl.count > 0 {
+                cell.textLabel?.text = "\(arrayControl[indexPath.row])"
+            }
         }
         
         cell.textLabel?.textColor = UIColor.white

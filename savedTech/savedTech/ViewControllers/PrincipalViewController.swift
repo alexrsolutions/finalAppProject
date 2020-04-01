@@ -22,6 +22,22 @@ struct Clientes {
     var id_Empresa: String
 }
 
+struct Reportes {
+    var descripcion: String
+    var id_Empresa: String
+    var id_Report: String
+    var id_Tech: String
+    var id_Techie: String
+}
+
+struct Tickets {
+    var descripcion: String
+    var date_generate: String
+    var id_Tech: String
+    var id_Techie: String
+    var id_Ticket: String
+}
+
 class PrincipalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let db = Firestore.firestore()
@@ -75,33 +91,38 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let userdata = db.collection("users").document(userID ?? "")
-        userdata.addSnapshotListener({ (snapshot, error ) in
-            if error != nil {
-                print("Error: \(error!)")
-            }else if let doc = snapshot {
-                ModelData.shared.user_type = doc.get("type_user") as! String
-                let idUser = doc.get("id_user") ?? ""
-                ModelData.shared.id_User = idUser as! String
-                print("id_User: \(String(describing: idUser))")
-                let welcomeName = doc.get("username") ?? "No Name"
-                let emailAddress = doc.get("email") ?? "No Name"
-                if ModelData.shared.user_type != "admin" {
-                    let enterprise = doc.get("empresa") ?? "No Name"
-                    self.enterpriseLbl.isHidden = false
-                    self.enterpriseLbl.text = "\(enterprise)"
-                    if ModelData.shared.user_type == "user" {
-                        self.adminBanner.text = "Client"
-                    } else if ModelData.shared.user_type == "tech" {
-                        self.adminBanner.text = "Techie"
+        let user_email = Auth.auth().currentUser?.email
+        let docRef = self.db.collection("users")
+        docRef.whereField("email", isEqualTo: user_email ?? "").getDocuments() { (querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                if querySnapshot!.documents.count == 1 {
+                    for document in (querySnapshot?.documents)!{
+                        print("Data: \(document.data())")
+                        ModelData.shared.user_type = document.data()["type_user"] as! String
+                        let idUser = document.data()["id_User"] ?? ""
+                        ModelData.shared.id_User = idUser as! String
+                        let welcomeName = document.data()["username"] ?? "No Name"
+                        let emailAddress = document.data()["email"] ?? "No Name"
+                        if ModelData.shared.user_type != "admin" {
+                            let enterprise = document.data()["empresa"] ?? "No Name"
+                            self.enterpriseLbl.isHidden = false
+                            self.enterpriseLbl.text = "\(enterprise)"
+                            if ModelData.shared.user_type == "user" {
+                                self.adminBanner.text = "Client"
+                            } else if ModelData.shared.user_type == "tech" {
+                                self.adminBanner.text = "Techie"
+                            }
+                        } else {
+                            self.adminBanner.text = "Admin"
+                        }
+                        self.welcomeLbl.text = "WELCOME: \(welcomeName as? String ?? "")"
+                        self.emailLbl.text = "Email: \(emailAddress as? String ?? "")"
                     }
-                } else {
-                    self.adminBanner.text = "Admin"
                 }
-                self.welcomeLbl.text = "WELCOME: \(welcomeName as? String ?? "")"
-                self.emailLbl.text = "Email: \(emailAddress as? String ?? "")"
             }
-        })
+        }
     }
     
     //Functions for basic activities Admin
@@ -113,7 +134,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         VC.modalPresentationStyle = .popover
-        self.present(VC, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: VC)
+        self.present(navController, animated: true, completion: nil)
     }
     
     @objc func registerMachine(notification: NSNotification){
@@ -124,18 +146,21 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         VC.modalPresentationStyle = .popover
-        self.present(VC, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: VC)
+        self.present(navController, animated: true, completion: nil)
     }
     
     @objc func registerUsers(notification: NSNotification){
         welcomeView.isHidden = true
+        
         guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "registerUser") as? RegisterUserViewController else {
             print("View controller could not be instantiated")
             return
         }
         
         VC.modalPresentationStyle = .popover
-        self.present(VC, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: VC)
+        self.present(navController, animated: true, completion: nil)
     }
     
     @objc func verTickets (notification: NSNotification){
@@ -171,7 +196,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 for document in (documents?.documents)!{
                     print("Documents: \(document.data())")
                     let userType = document.data()["type_user"] as? String
-                    if userType == "user" {
+                    if userType == "client" {
                         if let username = document.data()["username"] as? String {
                             let idUser = document.data()["id_User"] as? String
                             self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? ""))
@@ -221,8 +246,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 print(error!)
             } else {
                 for document in (documents?.documents)!{
-                    if let id_Number = document.data()["descripcion"] as? String{
-                        self.reportes.append(id_Number)
+                    if let id_Report = document.data()["id_Report"] as? String{
+                        self.reportes.append(id_Report)
                     }
                 }
             }
@@ -236,9 +261,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             print("View controller could not be instantiated")
             return
         }
-        
         VC.modalPresentationStyle = .popover
-        self.present(VC, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: VC)
+        self.present(navController, animated: true, completion: nil)
     }
     
     @objc func giveReview(notification: NSNotification){
@@ -246,9 +271,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             print("View controller could not be instantiated")
             return
         }
-        
         VC.modalPresentationStyle = .popover
-        self.present(VC, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: VC)
+        self.present(navController, animated: true, completion: nil)
     }
     
     @objc func profile(notification: NSNotification){
@@ -312,9 +337,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                         for document in querySnapshot!.documents {
                             VC.exampleOfReports.append(document.data()["descripcion"] as! String)
                         }
-                        
                         VC.modalPresentationStyle = .popover
-                        self.present(VC, animated: true, completion: nil)
+                        let navController = UINavigationController(rootViewController: VC)
+                        self.present(navController, animated: true, completion: nil)
                     }
             }
             
@@ -323,7 +348,17 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             print("Seccion Tickets")
             
         } else if reportes.count > 0 {
-            print("Seccion Reportes")
+            
+            guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editInfo") as? EditInfoViewController else {
+                print("View controller could not be instantiated")
+                return
+            }
+            
+            VC.titleFromBase = "Report Revision"
+            VC.isButtonHidden = true
+            VC.modalPresentationStyle = .popover
+            let navController = UINavigationController(rootViewController: VC)
+            self.present(navController, animated: true, completion: nil)
             
         }
     }
@@ -369,6 +404,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func editAction(at indexPath: IndexPath) -> UIContextualAction{
+        
         let action = UIContextualAction(style: .destructive, title: "Edit"){ (action, view, completion) in
             
             guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editInfo") as? EditInfoViewController else {
@@ -376,8 +412,21 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 return
             }
             
+            if self.clientes.count > 0 {
+                VC.titleFromBase = "Edit Client Info"
+                VC.id_Info = self.clientes[indexPath.row].id_Empresa
+                VC.isButtonHidden = false
+            }
+            
+            if self.reportes.count > 0 {
+                VC.titleFromBase = "Edit Reports"
+                VC.id_Info = self.reportes[indexPath.row]
+                VC.isButtonHidden = false
+            }
+            
             VC.modalPresentationStyle = .popover
-            self.present(VC, animated: true, completion: nil)
+            let navController = UINavigationController(rootViewController: VC)
+            self.present(navController, animated: true, completion: nil)
             
         }
         action.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)

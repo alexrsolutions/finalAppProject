@@ -20,10 +20,16 @@ class GiveReviewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
+        navigationItem.leftBarButtonItem = backButton
+        
         reviewInput.layer.borderColor = #colorLiteral(red: 0.6118932424, green: 0.6118932424, blue: 0.6118932424, alpha: 1)
         reviewInput.layer.borderWidth = 1.0
     }
     
+    @objc func goBack(){
+        dismiss(animated: true, completion: nil)
+    }
 
     @IBAction func addReview(_ sender: Any) {
         let users = self.db.collection("reviews")

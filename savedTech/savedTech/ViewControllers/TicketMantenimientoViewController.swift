@@ -30,6 +30,9 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
         
         nameView.layer.zPosition = 2
         
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
+        navigationItem.leftBarButtonItem = backButton
+        
         view.backgroundColor = UIColor.black
         captureSession = AVCaptureSession()
 
@@ -67,6 +70,10 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
         view.layer.addSublayer(previewLayer)
 
         captureSession.startRunning()
+    }
+        
+    @objc func goBack(){
+        dismiss(animated: true, completion: nil)
     }
     
     func failed() {

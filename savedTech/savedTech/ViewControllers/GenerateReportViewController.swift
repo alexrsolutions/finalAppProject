@@ -18,9 +18,16 @@ class GenerateReportViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
+        navigationItem.leftBarButtonItem = backButton
+        
         inputBigDescription.layer.borderColor = #colorLiteral(red: 0.6118932424, green: 0.6118932424, blue: 0.6118932424, alpha: 1)
         inputBigDescription.layer.borderWidth = 1.0
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func goBack(){
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func genReport(_ sender: Any) {

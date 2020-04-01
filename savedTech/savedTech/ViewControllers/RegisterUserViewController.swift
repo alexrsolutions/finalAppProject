@@ -19,11 +19,19 @@ class RegisterUserViewController: UIViewController {
     @IBOutlet weak var nameReg: UITextField!
     @IBOutlet weak var typeReg: UITextField!
     @IBOutlet weak var enterpriseReg: UITextField!
+    @IBOutlet var cityButtons: [UIButton]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
+        navigationItem.leftBarButtonItem = backButton
 
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func goBack(){
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func regsiterBtn(_ sender: Any) {
@@ -59,5 +67,9 @@ class RegisterUserViewController: UIViewController {
 
         return randomString
     }
+    
+    @IBAction func handleSelection(_ sender: Any) {
+    }
+    
 
 }
