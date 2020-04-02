@@ -11,10 +11,10 @@ import UIKit
 
 class SideMenuTableViewController: UITableViewController {
     
-    var arrayControl: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte", "Dar Reseña", "Ver Tecnicos", "Perfil"]
-    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Ver Reportes", "Perfil"]
+    var arrayControl: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte", "Dar Reseña", "Ver Tecnicos", "Ver Tecnicos", "Perfil"]
+    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Ver Reportes", "Ver Tecnicos", "Perfil"]
     var arrayUser: [String] = ["Ver Reportes", "Generar Reporte", "Dar Reseña", "Perfil"]
-    var arrayTech: [String] = ["Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Dar Reseña", "Perfil"]
+    var arrayTech: [String] = ["Perfil", "Ver Reportes", "Ver Clientes", "Generar Ticket", "Tickect Generados", "Registrar Nuevos Equipos"]
     //let delegationData: controlData
     
     override func viewWillAppear(_ animated: Bool) {
@@ -115,6 +115,11 @@ class SideMenuTableViewController: UITableViewController {
             NotificationCenter.default.post(name: Notification.Name("seeReports"), object: nil)
         }
         
+        if textInCell == "Ver Tecnicos" {
+            dismiss(animated: true, completion: nil)
+            NotificationCenter.default.post(name: Notification.Name("seeTechies"), object: nil)
+        }
+        
         if textInCell == "Generar Reporte" {
             dismiss(animated: true, completion: nil)
             NotificationCenter.default.post(name: Notification.Name("generateReports"), object: nil)
@@ -133,6 +138,11 @@ class SideMenuTableViewController: UITableViewController {
         if textInCell == "Perfil" {
             dismiss(animated: true, completion: nil)
             NotificationCenter.default.post(name: Notification.Name("profile"), object: nil)
+        }
+        
+        if textInCell == "Tickect Generados" {
+            dismiss(animated: true, completion: nil)
+            NotificationCenter.default.post(name: Notification.Name("ticketsByTechie"), object: nil)
         }
     }
 }

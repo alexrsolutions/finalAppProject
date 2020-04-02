@@ -43,39 +43,40 @@ class EditInfoViewController: UIViewController {
         titleLbl.text = titleFromBase
         editReport.isHidden = isButtonHidden
         
-        if titleFromBase == "Edit Reports" {
+        if titleFromBase == "Edit Reports" || titleFromBase == "Report Revision" {
             isReport = true
             print("Id_Info : \(id_Info)")
             getInfoFromReport()
         }
         
+        if titleFromBase == "Ticket Revision" {
+            print("Id_Info : \(id_Info)")
+            getInfoFromTickets()
+        }
+        
         if titleFromBase == "Edit Client Info" {
             isClient = true
-            getInfoFromClients()
         }
         
         if titleFromBase == "Edit Ticket Info" {
             isTechie = true
+            getInfoFromTickets()
         }
         
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
             navigationItem.leftBarButtonItem = backButton
     }
     
-    func getInfoFromClients(){
-        
-    }
-    
-    func getInforFromTechies(){
-        let docRef = self.db.collection("users")
-        docRef.whereField("id_User", isEqualTo: id_Info).getDocuments() { (querySnapshot, err) in
+    func getInfoFromTickets(){
+        let docRef = self.db.collection("tickets")
+        docRef.whereField("id_Ticket", isEqualTo: id_Info).getDocuments() { (querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
                 } else {
                     for document in querySnapshot!.documents {
                         self.documentId = document.documentID
-                        /*self.textEditDescription.text = document.data()["descripcion"] as? String
-                        self.techInCharge.text = document.data()["id_Techie"] as? String*/
+                        self.textEditDescription.text = document.data()["descripcion"] as? String
+                        self.techInCharge.text = document.data()["id_Techie"] as? String
                     }
                 }
         }

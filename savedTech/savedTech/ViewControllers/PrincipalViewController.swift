@@ -20,6 +20,7 @@ class ModelData: NSObject {
 struct Clientes {
     var nombre_empresa: String
     var id_Empresa: String
+    var type_user: String
 }
 
 struct Reportes {
@@ -45,6 +46,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     var clientes: [Clientes] = []
     var tickets: [String] = []
     var reportes: [String] = []
+    var id_User: String = ""
     
     @IBOutlet weak var welcomeView: UIView!
     @IBOutlet weak var tableView: UITableView!
@@ -61,15 +63,16 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         
         NotificationCenter.default.addObserver(self, selector: #selector(verTickets), name: Notification.Name("ver_Tickets"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(verClientes), name: Notification.Name("ver_Clientes"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(verTecnicos), name: Notification.Name("ver_Tecnicos"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(registerUsers), name: Notification.Name("registerUsers"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(registerMachine), name: Notification.Name("registerMachine"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ticketMaintain), name: Notification.Name("ticketMaintain"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(seeReports), name: Notification.Name("seeReports"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(generateReports), name: Notification.Name("generateReports"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(giveReview), name: Notification.Name("giveReview"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(seeTechies), name: Notification.Name("seeTechies"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(profile), name: Notification.Name("profile"), object: nil)
-        /*generateReports*/
+        NotificationCenter.default.addObserver(self, selector: #selector(ticketsByTechie), name: Notification.Name("ticketsByTechie"), object: nil)
+        /*seeTechies*/
     }
     
     @objc func openMenu(){
@@ -174,8 +177,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 print(error!)
             } else {
                 for document in (documents?.documents)!{
-                    if let id_Number = document.data()["id_Number"] as? String{
-                        self.tickets.append(id_Number)
+                    if let id_Ticket = document.data()["id_Ticket"] as? String{
+                        self.tickets.append(id_Ticket)
                     }
                 }
             }
@@ -199,7 +202,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                     if userType == "client" {
                         if let username = document.data()["username"] as? String {
                             let idUser = document.data()["id_User"] as? String
-                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? ""))
+                            let type = document.data()["type_user"] as? String
+                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? "", type_user: type ?? ""))
                         }
                     }
                     
@@ -210,7 +214,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         })
     }
     
-    @objc func verTecnicos (notification: NSNotification){
+    @objc func seeTechies (notification: NSNotification){
         clientes = []
         tickets = []
         reportes = []
@@ -225,7 +229,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                     if userType == "tech" {
                         if let username = document.data()["username"] as? String {
                             let idUser = document.data()["id_User"] as? String
-                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? ""))
+                            let type = document.data()["type_user"] as? String
+                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? "", type_user: type ?? ""))
                         }
                     }
                     
@@ -240,19 +245,36 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         tickets = []
         reportes = []
         welcomeView.isHidden = true
-        let docRef = db.collection("reportes")
-        docRef.getDocuments(completion: { (documents, error) in
-            if error != nil{
-                print(error!)
-            } else {
-                for document in (documents?.documents)!{
-                    if let id_Report = document.data()["id_Report"] as? String{
-                        self.reportes.append(id_Report)
+        
+        if ModelData.shared.id_User == "tech" {
+            let docRef = self.db.collection("reportes")
+            docRef.whereField("id_Techie", isEqualTo: ModelData.shared.id_User).getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            if let id_Ticket = document.data()["id_Ticket"] as? String{
+                                self.reportes.append(id_Ticket)
+                            }
+                        }
+                    }
+                self.tableView.reloadData()
+            }
+        } else {
+            let docRef = db.collection("reportes")
+            docRef.getDocuments(completion: { (documents, error) in
+                if error != nil{
+                    print(error!)
+                } else {
+                    for document in (documents?.documents)!{
+                        if let id_Report = document.data()["id_Report"] as? String{
+                            self.reportes.append(id_Report)
+                        }
                     }
                 }
-            }
-            self.tableView.reloadData()
-        })
+                self.tableView.reloadData()
+            })
+        }
     }
     
     @objc func generateReports(notification: NSNotification){
@@ -278,6 +300,27 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @objc func profile(notification: NSNotification){
         welcomeView.isHidden = false
+    }
+    
+    @objc func ticketsByTechie(notification: NSNotification){
+        clientes = []
+        tickets = []
+        reportes = []
+        welcomeView.isHidden = true
+        
+        let docRef = self.db.collection("tickets")
+        docRef.whereField("id_Techie", isEqualTo: ModelData.shared.id_User).getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        if let id_Ticket = document.data()["id_Ticket"] as? String{
+                            self.tickets.append(id_Ticket)
+                        }
+                    }
+                }
+            self.tableView.reloadData()
+        }
     }
     
     //Table View
@@ -328,24 +371,50 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 return
             }
             
-            print(clientes[indexPath.row].id_Empresa)
-            db.collection("reportes").whereField("id_Empresa", isEqualTo: clientes[indexPath.row].id_Empresa)
-                .getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        print("Error getting documents: \(err)")
-                    } else {
-                        for document in querySnapshot!.documents {
-                            VC.exampleOfReports.append(document.data()["descripcion"] as! String)
+            if clientes[indexPath.row].type_user == "tech" {
+                print(clientes[indexPath.row].id_Empresa)
+                db.collection("tickets").whereField("id_Techie", isEqualTo: clientes[indexPath.row].id_Empresa)
+                    .getDocuments() { (querySnapshot, err) in
+                        if let err = err {
+                            print("Error getting documents: \(err)")
+                        } else {
+                            for document in querySnapshot!.documents {
+                                VC.exampleOfReports.append(document.data()["descripcion"] as! String)
+                            }
+                            VC.modalPresentationStyle = .popover
+                            let navController = UINavigationController(rootViewController: VC)
+                            self.present(navController, animated: true, completion: nil)
                         }
-                        VC.modalPresentationStyle = .popover
-                        let navController = UINavigationController(rootViewController: VC)
-                        self.present(navController, animated: true, completion: nil)
-                    }
+                }
+            } else {
+                print(clientes[indexPath.row].id_Empresa)
+                db.collection("reportes").whereField("id_Empresa", isEqualTo: clientes[indexPath.row].id_Empresa)
+                    .getDocuments() { (querySnapshot, err) in
+                        if let err = err {
+                            print("Error getting documents: \(err)")
+                        } else {
+                            for document in querySnapshot!.documents {
+                                VC.exampleOfReports.append(document.data()["descripcion"] as! String)
+                            }
+                            VC.modalPresentationStyle = .popover
+                            let navController = UINavigationController(rootViewController: VC)
+                            self.present(navController, animated: true, completion: nil)
+                        }
+                }
             }
             
-            
         } else if tickets.count > 0 {
-            print("Seccion Tickets")
+            guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editInfo") as? EditInfoViewController else {
+                print("View controller could not be instantiated")
+                return
+            }
+            
+            VC.titleFromBase = "Ticket Revision"
+            VC.id_Info = self.tickets[indexPath.row]
+            VC.isButtonHidden = true
+            VC.modalPresentationStyle = .popover
+            let navController = UINavigationController(rootViewController: VC)
+            self.present(navController, animated: true, completion: nil)
             
         } else if reportes.count > 0 {
             
@@ -355,6 +424,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
             VC.titleFromBase = "Report Revision"
+            VC.id_Info = self.reportes[indexPath.row]
             VC.isButtonHidden = true
             VC.modalPresentationStyle = .popover
             let navController = UINavigationController(rootViewController: VC)
@@ -368,6 +438,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             let delete = deleteAction(at: indexPath)
             let edit = editAction(at: indexPath)
             return UISwipeActionsConfiguration(actions: [delete, edit])
+        } else if ModelData.shared.user_type == "tech" {
+            let edit = editAction(at: indexPath)
+            return UISwipeActionsConfiguration(actions: [edit])
         } else {
             return nil
         }
@@ -407,26 +480,49 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let action = UIContextualAction(style: .destructive, title: "Edit"){ (action, view, completion) in
             
-            guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editInfo") as? EditInfoViewController else {
-                print("View controller could not be instantiated")
-                return
-            }
-            
             if self.clientes.count > 0 {
-                VC.titleFromBase = "Edit Client Info"
+                guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editUser") as? EditUserViewController else {
+                    print("View controller could not be instantiated")
+                    return
+                }
+                
+                VC.headingTitle = "Edit Client Info"
                 VC.id_Info = self.clientes[indexPath.row].id_Empresa
-                VC.isButtonHidden = false
+                
+                VC.modalPresentationStyle = .popover
+                let navController = UINavigationController(rootViewController: VC)
+                self.present(navController, animated: true, completion: nil)
             }
             
             if self.reportes.count > 0 {
+                guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editInfo") as? EditInfoViewController else {
+                    print("View controller could not be instantiated")
+                    return
+                }
+                
                 VC.titleFromBase = "Edit Reports"
                 VC.id_Info = self.reportes[indexPath.row]
                 VC.isButtonHidden = false
+                
+                VC.modalPresentationStyle = .popover
+                let navController = UINavigationController(rootViewController: VC)
+                self.present(navController, animated: true, completion: nil)
             }
             
-            VC.modalPresentationStyle = .popover
-            let navController = UINavigationController(rootViewController: VC)
-            self.present(navController, animated: true, completion: nil)
+            if self.tickets.count > 0 {
+                guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "editInfo") as? EditInfoViewController else {
+                    print("View controller could not be instantiated")
+                    return
+                }
+                
+                VC.titleFromBase = "Edit Tickets"
+                VC.id_Info = self.tickets[indexPath.row]
+                VC.isButtonHidden = false
+                
+                VC.modalPresentationStyle = .popover
+                let navController = UINavigationController(rootViewController: VC)
+                self.present(navController, animated: true, completion: nil)
+            }
             
         }
         action.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
