@@ -8,11 +8,13 @@
 
 import UIKit
 import FirebaseFirestore
+import FirebaseStorage
 import FirebaseAuth
 
 class TicketRegisterViewController: UIViewController {
 
     let db = Firestore.firestore()
+    var idComputer: String = ""
     @IBOutlet weak var marcaInput: UITextField!
     @IBOutlet weak var modeloInput: UITextField!
     @IBOutlet weak var procesadorInput: UITextField!
@@ -34,8 +36,32 @@ class TicketRegisterViewController: UIViewController {
     @IBAction func registerMachine(_ sender: Any) {
         let users = self.db.collection("tech")
         
-        users.document().setData(["id_Tech" : randomString(length: 7), "marca" : self.marcaInput.text ?? "", "modelo" : self.modeloInput.text ?? "", "procesador" : self.procesadorInput.text ?? "", "almacenamiento" : self.almacenamientoInput.text ?? ""])
-    }	
+        let idString = randomString(length: 7)
+        
+        let image = generateQRCode(from: idString)
+        if let dataFromImage = image?.pngData() {
+            uploadToDatabase(data: dataFromImage)
+        }
+        
+        users.document().setData(["id_Tech" : idString, "marca" : self.marcaInput.text ?? "", "modelo" : self.modeloInput.text ?? "", "procesador" : self.procesadorInput.text ?? "", "almacenamiento" : self.almacenamientoInput.text ?? "", "urlQr" : self.idComputer])
+    }
+    
+    func uploadToDatabase(data: Data){
+        let imageRef = Storage.storage().reference().child("QrCode/" + self.randomString(length: 20) + ".jpeg")
+        imageRef.putData(data, metadata: nil){ (metadata, error) in
+            if error != nil{
+                print("Error")
+            }else{
+                imageRef.downloadURL{ url, error in
+                    if let error = error {
+                        print(error)
+                    } else {
+                        self.idComputer = url?.absoluteString ?? ""
+                    }
+                }
+            }
+        }
+    }
     
     func randomString(length: Int) -> String {
 
@@ -53,7 +79,20 @@ class TicketRegisterViewController: UIViewController {
         return randomString
     }
     
-    
+    func generateQRCode(from string: String) -> UIImage? {
+        let data = string.data(using: String.Encoding.ascii)
+
+        if let filter = CIFilter(name: "CIQRCodeGenerator") {
+            filter.setValue(data, forKey: "inputMessage")
+            let transform = CGAffineTransform(scaleX: 3, y: 3)
+
+            if let output = filter.outputImage?.transformed(by: transform) {
+                return UIImage(ciImage: output)
+            }
+        }
+
+        return nil
+    }
 
     /*
     // MARK: - Navigation

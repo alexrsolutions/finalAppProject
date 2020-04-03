@@ -10,6 +10,7 @@ import UIKit
 import FirebaseFirestore
 import FirebaseAuth
 import SideMenu
+import MessageUI
 
 class ModelData: NSObject {
     static let shared: ModelData = ModelData()
@@ -39,7 +40,7 @@ struct Tickets {
     var id_Ticket: String
 }
 
-class PrincipalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class PrincipalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
     let db = Firestore.firestore()
     var userID = Auth.auth().currentUser?.uid
