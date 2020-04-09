@@ -126,8 +126,10 @@ class TicketMantenimientoViewController: UIViewController, AVCaptureMetadataOutp
     @IBAction func genTicket(_ sender: Any) {
         let date = getCurrentDateTime()
         let tickets = self.db.collection("tickets")
-        tickets.document().setData(["id_Number" : self.pcIdText.text ?? "", "id_Ticket" : randomString(length: 9), "Date of Serviec" : date, "id_Tech" : idOfTech, "descriptionTicket" : descriptionTickey.text ?? ""])
+        
+        tickets.document().setData(["id_Number" : self.pcIdText.text ?? "", "id_Ticket" : randomString(length: 9), "fecha" : date, "descripcion" : descriptionTickey.text ?? "", "id_Techie" : ModelData.shared.id_User])
         print("Se registro dispositivo")
+        
         dismiss(animated: true)
     }
     

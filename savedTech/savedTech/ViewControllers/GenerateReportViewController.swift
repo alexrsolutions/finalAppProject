@@ -32,7 +32,7 @@ class GenerateReportViewController: UIViewController {
     
     @IBAction func genReport(_ sender: Any) {
         let users = self.db.collection("reportes")
-        users.document().setData(["id_Report" : randomString(length: 7), "descripcion" : self.inputBigDescription.text ?? ""])
+        users.document().setData(["id_Report" : randomString(length: 7), "descripcion" : self.inputBigDescription.text ?? "", "id_Empresa" : ModelData.shared.id_User, "id_Techie" : "", "id_Tech" : ""])
     }
     
     func randomString(length: Int) -> String {

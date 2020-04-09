@@ -18,8 +18,11 @@ class ModelData: NSObject {
     var id_User = ""
 }
 
-struct Clientes {
-    var nombre_empresa: String
+struct Users {
+    var username: String
+    var name_empresa: String
+    var email: String
+    var address: String
     var id_Empresa: String
     var type_user: String
 }
@@ -44,9 +47,9 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     
     let db = Firestore.firestore()
     var userID = Auth.auth().currentUser?.uid
-    var clientes: [Clientes] = []
-    var tickets: [String] = []
-    var reportes: [String] = []
+    var clientes: [Users] = []
+    var tickets: [Tickets] = []
+    var reportes: [Reportes] = []
     var id_User: String = ""
     
     @IBOutlet weak var welcomeView: UIView!
@@ -73,6 +76,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         NotificationCenter.default.addObserver(self, selector: #selector(seeTechies), name: Notification.Name("seeTechies"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(profile), name: Notification.Name("profile"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ticketsByTechie), name: Notification.Name("ticketsByTechie"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(closeSession), name: Notification.Name("closeSession"), object: nil)
         /*seeTechies*/
     }
     
@@ -179,7 +183,11 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             } else {
                 for document in (documents?.documents)!{
                     if let id_Ticket = document.data()["id_Ticket"] as? String{
-                        self.tickets.append(id_Ticket)
+                        let description = document.data()["descripcion"] as? String
+                        let date = document.data()["fecha"] as? String
+                        let techie = document.data()["id_Techie"] as? String
+                        let tech = document.data()["id_Number"] as? String
+                        self.tickets.append(Tickets(descripcion: description ?? "", date_generate: date ?? "", id_Tech: tech ?? "", id_Techie: techie ?? "", id_Ticket: id_Ticket))
                     }
                 }
             }
@@ -204,7 +212,10 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                         if let username = document.data()["username"] as? String {
                             let idUser = document.data()["id_User"] as? String
                             let type = document.data()["type_user"] as? String
-                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? "", type_user: type ?? ""))
+                             let empresa = document.data()["empresa"] as? String
+                            let emailUser = document.data()["email"] as? String
+                           let addresUser = document.data()["address"] as? String
+                            self.clientes.append(Users(username: username, name_empresa: empresa ?? "", email: emailUser ?? "", address: addresUser ?? "", id_Empresa: idUser ?? "", type_user: type ?? ""))
                         }
                     }
                     
@@ -231,7 +242,10 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                         if let username = document.data()["username"] as? String {
                             let idUser = document.data()["id_User"] as? String
                             let type = document.data()["type_user"] as? String
-                            self.clientes.append(Clientes(nombre_empresa: username, id_Empresa: idUser ?? "", type_user: type ?? ""))
+                           let empresa = document.data()["empresa"] as? String
+                           let emailUser = document.data()["email"] as? String
+                           let addresUser = document.data()["address"] as? String
+                            self.clientes.append(Users(username: username, name_empresa: empresa ?? "", email: emailUser ?? "", address: addresUser ?? "", id_Empresa: idUser ?? "", type_user: type ?? ""))
                         }
                     }
                     
@@ -247,15 +261,39 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         reportes = []
         welcomeView.isHidden = true
         
-        if ModelData.shared.id_User == "tech" {
+        if ModelData.shared.user_type == "tech" {
             let docRef = self.db.collection("reportes")
             docRef.whereField("id_Techie", isEqualTo: ModelData.shared.id_User).getDocuments() { (querySnapshot, err) in
                     if let err = err {
                         print("Error getting documents: \(err)")
                     } else {
                         for document in querySnapshot!.documents {
-                            if let id_Ticket = document.data()["id_Ticket"] as? String{
-                                self.reportes.append(id_Ticket)
+                            if let id_Report = document.data()["id_Report"] as? String{
+                                let id_Techie = document.data()["id_Techie"] as? String
+                                let id_Tech = document.data()["id_Tech"] as? String
+                                let empresa = document.data()["id_Empresa"] as? String
+                                let description = document.data()["descripcion"] as? String
+                                self.reportes.append(Reportes(descripcion: description ?? "", id_Empresa: empresa ?? "", id_Report: id_Report, id_Tech: id_Tech ?? "", id_Techie: id_Techie ?? ""))
+                            }
+                        }
+                    }
+                self.tableView.reloadData()
+            }
+        } else if ModelData.shared.user_type == "client" {
+            let docRef = self.db.collection("reportes")
+            
+            print(ModelData.shared.id_User)
+            docRef.whereField("id_Empresa", isEqualTo: ModelData.shared.id_User).getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            if let id_Report = document.data()["id_Report"] as? String{
+                                let id_Techie = document.data()["id_Techie"] as? String
+                                let id_Tech = document.data()["id_Tech"] as? String
+                                let empresa = document.data()["id_Empresa"] as? String
+                                let description = document.data()["descripcion"] as? String
+                                self.reportes.append(Reportes(descripcion: description ?? "", id_Empresa: empresa ?? "", id_Report: id_Report, id_Tech: id_Tech ?? "", id_Techie: id_Techie ?? ""))
                             }
                         }
                     }
@@ -269,12 +307,26 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 } else {
                     for document in (documents?.documents)!{
                         if let id_Report = document.data()["id_Report"] as? String{
-                            self.reportes.append(id_Report)
+                            let id_Techie = document.data()["id_Techie"] as? String
+                            let id_Tech = document.data()["id_Tech"] as? String
+                            let empresa = document.data()["id_Empresa"] as? String
+                            let description = document.data()["descripcion"] as? String
+                            self.reportes.append(Reportes(descripcion: description ?? "", id_Empresa: empresa ?? "", id_Report: id_Report, id_Tech: id_Tech ?? "", id_Techie: id_Techie ?? ""))
                         }
                     }
                 }
                 self.tableView.reloadData()
             })
+        }
+    }
+    
+    @objc func closeSession(notification: NSNotification){
+        
+        let firebaseAuth = Auth.auth()
+        do {
+          try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+          print ("Error signing out: %@", signOutError)
         }
     }
     
@@ -316,7 +368,11 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 } else {
                     for document in querySnapshot!.documents {
                         if let id_Ticket = document.data()["id_Ticket"] as? String{
-                            self.tickets.append(id_Ticket)
+                            let description = document.data()["descripcion"] as? String
+                            let date = document.data()["fecha"] as? String
+                            let techie = document.data()["id_Techie"] as? String
+                            let tech = document.data()["id_Number"] as? String
+                            self.tickets.append(Tickets(descripcion: description ?? "", date_generate: date ?? "", id_Tech: tech ?? "", id_Techie: techie ?? "", id_Ticket: id_Ticket))
                         }
                     }
                 }
@@ -324,7 +380,12 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    //Table View
+    //MARK: TableView Delegates
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 200.0
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var numberOfRows = 0
         
@@ -344,18 +405,69 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell", for: indexPath) as! DetailsTableViewCell
+        
+        cell.empresaLbl.text = ""
+        cell.imageDefault.image = UIImage(named: "blank-profile-picture")
+        cell.emailLbl.text = ""
+        cell.usernameLbl.text = ""
         
         if clientes.count > 0 {
-            cell.textLabel?.text = "\(clientes[indexPath.row].nombre_empresa)"
+            cell.empresaLbl.text = "Enterprise: \(clientes[indexPath.row].name_empresa)"
+            cell.usernameLbl.text = "Client: \(clientes[indexPath.row].username)"
+            cell.imageDefault.image = UIImage(named: "blank-profile-picture")
+            cell.emailLbl.text = "Email: \(clientes[indexPath.row].email)"
+            cell.addressLbl.text = "Address: \(clientes[indexPath.row].address)"
         }
         
         if tickets.count > 0 {
-            cell.textLabel?.text = "\(tickets[indexPath.row])"
+            cell.addressLbl.text = "Description: \(tickets[indexPath.row].descripcion)"
+            cell.imageDefault.image = UIImage(named: "no_computer")
+            cell.empresaLbl.text = "Id: \(tickets[indexPath.row].id_Ticket)"
+            cell.emailLbl.text = "Date: \(tickets[indexPath.row].date_generate)"
+            
+            db.collection("users").whereField("id_User", isEqualTo: tickets[indexPath.row].id_Techie)
+                .getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            let username = document.data()["username"] as? String
+                            cell.usernameLbl.text = "Techie: \(username ?? "")"
+                        }
+                    }
+            }
         }
         
         if reportes.count > 0 {
-            cell.textLabel?.text = "\(reportes[indexPath.row])"
+            cell.imageDefault.image = UIImage(named: "no_computer")
+            cell.usernameLbl.text = "Id Report: \(reportes[indexPath.row].id_Report)"
+            cell.addressLbl.text = "Description: \(reportes[indexPath.row].descripcion)"
+            
+            db.collection("users").whereField("id_User", isEqualTo: reportes[indexPath.row].id_Empresa)
+                .getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            let username = document.data()["username"] as? String
+                            cell.empresaLbl.text = "Enterprise: \(username ?? "")"
+                        }
+                    }
+            }
+            
+            db.collection("users").whereField("id_User", isEqualTo: reportes[indexPath.row].id_Techie)
+                .getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            let username = document.data()["username"] as? String
+                            cell.emailLbl.text = "Techie: \(username ?? "")"
+                        }
+                    }
+            }
+            
         }
         
         return cell
@@ -411,7 +523,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
             VC.titleFromBase = "Ticket Revision"
-            VC.id_Info = self.tickets[indexPath.row]
+            VC.id_Info = self.tickets[indexPath.row].id_Ticket
             VC.isButtonHidden = true
             VC.modalPresentationStyle = .popover
             let navController = UINavigationController(rootViewController: VC)
@@ -425,7 +537,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
             VC.titleFromBase = "Report Revision"
-            VC.id_Info = self.reportes[indexPath.row]
+            VC.id_Info = self.reportes[indexPath.row].id_Report
             VC.isButtonHidden = true
             VC.modalPresentationStyle = .popover
             let navController = UINavigationController(rootViewController: VC)
@@ -450,28 +562,80 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     func deleteAction(at indexPath: IndexPath) -> UIContextualAction{
         let action = UIContextualAction(style: .destructive, title: "Delete"){ (action, view, completion) in
             
-            let docRef = self.db.collection("users")
-            var documentIds: String = ""
-            docRef.whereField("id_User", isEqualTo: self.clientes[indexPath.row].id_Empresa).getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        print("Error getting documents: \(err)")
-                    } else {
-                        for document in querySnapshot!.documents {
-                            documentIds = document.documentID
-                        }
-                        
-                        docRef.document(documentIds).delete() { err in
-                            if let err = err {
-                                print("Error removing document: \(err)")
-                            } else {
-                                print("Document successfully removed!")
+            if self.clientes.count > 0 {
+                let docRef = self.db.collection("users")
+                var documentIds: String = ""
+                docRef.whereField("id_User", isEqualTo: self.clientes[indexPath.row].id_Empresa).getDocuments() { (querySnapshot, err) in
+                        if let err = err {
+                            print("Error getting documents: \(err)")
+                        } else {
+                            for document in querySnapshot!.documents {
+                                documentIds = document.documentID
+                            }
+                            
+                            docRef.document(documentIds).delete() { err in
+                                if let err = err {
+                                    print("Error removing document: \(err)")
+                                } else {
+                                    print("Document successfully removed!")
+                                }
                             }
                         }
-                    }
+                }
+                
+                self.clientes.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
             }
             
-            self.clientes.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            if self.reportes.count > 0 {
+                let docRef = self.db.collection("reportes")
+                var documentIds: String = ""
+                docRef.whereField("id_Report", isEqualTo: self.reportes[indexPath.row].id_Report).getDocuments() { (querySnapshot, err) in
+                        if let err = err {
+                            print("Error getting documents: \(err)")
+                        } else {
+                            for document in querySnapshot!.documents {
+                                documentIds = document.documentID
+                            }
+                            
+                            docRef.document(documentIds).delete() { err in
+                                if let err = err {
+                                    print("Error removing document: \(err)")
+                                } else {
+                                    print("Document successfully removed!")
+                                }
+                            }
+                        }
+                }
+                
+                self.reportes.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+            
+            if self.tickets.count > 0 {
+                let docRef = self.db.collection("tickets")
+                var documentIds: String = ""
+                docRef.whereField("id_Ticket", isEqualTo: self.tickets[indexPath.row].id_Ticket).getDocuments() { (querySnapshot, err) in
+                        if let err = err {
+                            print("Error getting documents: \(err)")
+                        } else {
+                            for document in querySnapshot!.documents {
+                                documentIds = document.documentID
+                            }
+                            
+                            docRef.document(documentIds).delete() { err in
+                                if let err = err {
+                                    print("Error removing document: \(err)")
+                                } else {
+                                    print("Document successfully removed!")
+                                }
+                            }
+                        }
+                }
+                
+                self.tickets.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
         }
         action.backgroundColor = #colorLiteral(red: 0.824714467, green: 0.2022622079, blue: 0, alpha: 1)
         return action
@@ -502,7 +666,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
                 
                 VC.titleFromBase = "Edit Reports"
-                VC.id_Info = self.reportes[indexPath.row]
+                VC.id_Info = self.reportes[indexPath.row].id_Report
                 VC.isButtonHidden = false
                 
                 VC.modalPresentationStyle = .popover
@@ -516,8 +680,8 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
                     return
                 }
                 
-                VC.titleFromBase = "Edit Tickets"
-                VC.id_Info = self.tickets[indexPath.row]
+                VC.titleFromBase = "Edit Ticket Info"
+                VC.id_Info = self.tickets[indexPath.row].id_Ticket
                 VC.isButtonHidden = false
                 
                 VC.modalPresentationStyle = .popover

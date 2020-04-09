@@ -10,6 +10,7 @@ import UIKit
 import Foundation
 import FirebaseFirestore
 import FirebaseAuth
+import iOSDropDown
 
 class RegisterUserViewController: UIViewController {
     
@@ -20,14 +21,44 @@ class RegisterUserViewController: UIViewController {
     @IBOutlet weak var typeReg: UITextField!
     @IBOutlet weak var enterpriseReg: UITextField!
     @IBOutlet var cityButtons: [UIButton]!
+    @IBOutlet weak var dropDown: DropDown!
+    @IBOutlet weak var phoneReg: UITextField!
+    @IBOutlet weak var addressReg: UITextField!
+    
+    var type_user: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
         navigationItem.leftBarButtonItem = backButton
+        
 
-        // Do any additional setup after loading the view.
+        // The list of array to display. Can be changed dynamically
+        dropDown.optionArray = ["Client", "Technician", "Administrator"]
+        dropDown.layer.borderWidth = 1.0
+        dropDown.layer.borderColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        
+        //Its Id Values and its optional
+        dropDown.optionIds = [1,23,54,22]
+
+        // The the Closure returns Selected Index and String
+        dropDown.didSelect{(selectedText , index ,id) in
+            switch(index){
+            case 0:
+                self.type_user = "client"
+                break
+            case 1:
+                self.type_user = "tech"
+                break
+            case 2:
+                self.type_user = "admin"
+                break
+            default:
+                self.type_user = "client"
+                break
+            }
+        }
     }
     
     @objc func goBack(){
@@ -46,8 +77,7 @@ class RegisterUserViewController: UIViewController {
                 
                 let users = self.db.collection("users")
                 
-                users.document().setData(["email" : self.emailReg.text ?? "", "password" : "savedTech", "type_user" : self.typeReg.text ?? "", "username" : self.nameReg.text ?? "", "empresa" : self.enterpriseReg.text ?? "", "id_User" : self.randomString(length: 7)])
-                
+                users.document().setData(["email" : self.emailReg.text ?? "", "password" : "savedTech", "type_user" : self.type_user, "username" : self.nameReg.text ?? "", "empresa" : self.enterpriseReg.text ?? "", "id_User" : self.randomString(length: 7), "phone" : self.phoneReg.text ?? "", "address" : self.addressReg.text ?? ""])
             })
         }
     }

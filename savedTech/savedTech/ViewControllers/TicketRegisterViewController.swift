@@ -14,6 +14,7 @@ import FirebaseAuth
 class TicketRegisterViewController: UIViewController {
 
     let db = Firestore.firestore()
+    var idString: String = ""
     var idComputer: String = ""
     @IBOutlet weak var marcaInput: UITextField!
     @IBOutlet weak var modeloInput: UITextField!
@@ -34,16 +35,15 @@ class TicketRegisterViewController: UIViewController {
     }
     
     @IBAction func registerMachine(_ sender: Any) {
-        let users = self.db.collection("tech")
         
-        let idString = randomString(length: 7)
+        idString = self.randomString(length: 7)
         
         let image = generateQRCode(from: idString)
         if let dataFromImage = image?.pngData() {
             uploadToDatabase(data: dataFromImage)
         }
         
-        users.document().setData(["id_Tech" : idString, "marca" : self.marcaInput.text ?? "", "modelo" : self.modeloInput.text ?? "", "procesador" : self.procesadorInput.text ?? "", "almacenamiento" : self.almacenamientoInput.text ?? "", "urlQr" : self.idComputer])
+        dismiss(animated: true, completion: nil)
     }
     
     func uploadToDatabase(data: Data){
@@ -57,6 +57,12 @@ class TicketRegisterViewController: UIViewController {
                         print(error)
                     } else {
                         self.idComputer = url?.absoluteString ?? ""
+                        print(self.idComputer)
+                        
+                        let users = self.db.collection("tech")
+                        
+                        users.document().setData(["id_Tech" : self.idString, "marca" : self.marcaInput.text ?? "", "modelo" : self.modeloInput.text ?? "", "procesador" : self.procesadorInput.text ?? "", "almacenamiento" : self.almacenamientoInput.text ?? "", "urlQr" : self.idComputer, "rented" : false])
+                        
                     }
                 }
             }

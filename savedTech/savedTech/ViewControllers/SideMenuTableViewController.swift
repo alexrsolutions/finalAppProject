@@ -8,13 +8,14 @@
 
 import SideMenu
 import UIKit
+import FirebaseAuth
 
 class SideMenuTableViewController: UITableViewController {
     
     var arrayControl: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte", "Dar Reseña", "Ver Tecnicos", "Ver Tecnicos", "Perfil"]
-    var arrayAdmin: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Ver Reportes", "Ver Tecnicos", "Perfil"]
-    var arrayUser: [String] = ["Ver Reportes", "Generar Reporte", "Dar Reseña", "Perfil"]
-    var arrayTech: [String] = ["Perfil", "Ver Reportes", "Ver Clientes", "Generar Ticket", "Tickect Generados", "Registrar Nuevos Equipos"]
+    var arrayAdmin: [String] = ["Perfil", "Ver Tickets", "Ver Clientes", "Ver Reportes", "Ver Tecnicos", "Registrar Usuarios", "Registrar Nuevos Equipos", "Cerrar Sesion"]
+    var arrayUser: [String] = ["Perfil", "Dar Reseña", "Ver Reportes", "Generar Reporte", "Cerrar Sesion"]
+    var arrayTech: [String] = ["Perfil", "Ver Reportes", "Ver Clientes", "Generar Ticket", "Ticket Generados", "Registrar Nuevos Equipos", "Cerrar Sesion"]
     //let delegationData: controlData
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,7 +48,7 @@ class SideMenuTableViewController: UITableViewController {
             return arrayAdmin.count
         } else if ModelData.shared.user_type == "tech" {
             return arrayTech.count
-        } else if ModelData.shared.user_type == "user" {
+        } else if ModelData.shared.user_type == "client" {
             return arrayUser.count
         } else {
             return arrayControl.count
@@ -66,7 +67,7 @@ class SideMenuTableViewController: UITableViewController {
             if arrayTech.count > 0 {
                 cell.textLabel?.text = "\(arrayTech[indexPath.row])"
             }
-        } else if ModelData.shared.user_type == "user" {
+        } else if ModelData.shared.user_type == "client" {
             if arrayUser.count > 0 {
                 cell.textLabel?.text = "\(arrayUser[indexPath.row])"
             }
@@ -140,9 +141,14 @@ class SideMenuTableViewController: UITableViewController {
             NotificationCenter.default.post(name: Notification.Name("profile"), object: nil)
         }
         
-        if textInCell == "Tickect Generados" {
+        if textInCell == "Ticket Generados" {
             dismiss(animated: true, completion: nil)
             NotificationCenter.default.post(name: Notification.Name("ticketsByTechie"), object: nil)
+        }
+        
+        if textInCell == "Cerrar Sesion" {
+            NotificationCenter.default.post(name: Notification.Name("closeSession"), object: nil)
+            dismiss(animated: true, completion: nil)
         }
     }
 }
