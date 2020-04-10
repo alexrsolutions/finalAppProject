@@ -13,9 +13,9 @@ import FirebaseAuth
 class SideMenuTableViewController: UITableViewController {
     
     var arrayControl: [String] = ["Registrar Usuarios", "Ver Tickets", "Registrar Nuevos Equipos", "Ver Clientes", "Generar Ticket", "Ver Reportes", "Generar Reporte", "Dar Reseña", "Ver Tecnicos", "Ver Tecnicos", "Perfil"]
-    var arrayAdmin: [String] = ["Perfil", "Ver Tickets", "Ver Clientes", "Ver Reportes", "Ver Tecnicos", "Registrar Usuarios", "Registrar Nuevos Equipos", "Cerrar Sesion"]
-    var arrayUser: [String] = ["Perfil", "Dar Reseña", "Ver Reportes", "Generar Reporte", "Cerrar Sesion"]
-    var arrayTech: [String] = ["Perfil", "Ver Reportes", "Ver Clientes", "Generar Ticket", "Ticket Generados", "Registrar Nuevos Equipos", "Cerrar Sesion"]
+    var arrayAdmin: [String] = ["Perfil", "Ver Tickets", "Ver Clientes", "Ver Reportes", "Ver Tecnicos", "Registrar Usuarios", "Registrar Nuevos Equipos"]
+    var arrayUser: [String] = ["Perfil", "Dar Reseña", "Ver Reportes", "Generar Reporte"]
+    var arrayTech: [String] = ["Perfil", "Ver Reportes", "Ver Clientes", "Generar Ticket", "Ticket Generados", "Registrar Nuevos Equipos"]
     //let delegationData: controlData
     
     override func viewWillAppear(_ animated: Bool) {
@@ -144,11 +144,6 @@ class SideMenuTableViewController: UITableViewController {
         if textInCell == "Ticket Generados" {
             dismiss(animated: true, completion: nil)
             NotificationCenter.default.post(name: Notification.Name("ticketsByTechie"), object: nil)
-        }
-        
-        if textInCell == "Cerrar Sesion" {
-            NotificationCenter.default.post(name: Notification.Name("closeSession"), object: nil)
-            dismiss(animated: true, completion: nil)
         }
     }
 }

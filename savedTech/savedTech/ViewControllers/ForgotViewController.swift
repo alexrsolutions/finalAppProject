@@ -25,11 +25,21 @@ class ForgotViewController: UIViewController {
         
         let email = emailField.text ?? ""
         
+        warningLbl.isHidden = false
+        
+        if email.isEmpty {
+            self.warningLbl.textColor = UIColor.red
+            self.warningLbl.text = "Input an email to send request"
+        }
+        
         Auth.auth().sendPasswordReset(withEmail: email) { error in
             if (error != nil) {
                 print("\(String(describing: error))")
             } else {
+                self.warningLbl.textColor = UIColor.green
                 self.warningLbl.text = "An email was sent for you to reset your password"
+                
+                self.dismiss(animated: true, completion: nil)
             }
         }
             

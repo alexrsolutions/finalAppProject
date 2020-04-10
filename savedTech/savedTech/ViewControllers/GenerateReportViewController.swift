@@ -14,9 +14,11 @@ class GenerateReportViewController: UIViewController {
     
     let db = Firestore.firestore()
     @IBOutlet weak var inputBigDescription: UITextView!
+    @IBOutlet weak var warningLbl: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        warningLbl.isHidden = true
         
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
         navigationItem.leftBarButtonItem = backButton
@@ -31,8 +33,17 @@ class GenerateReportViewController: UIViewController {
     }
     
     @IBAction func genReport(_ sender: Any) {
-        let users = self.db.collection("reportes")
-        users.document().setData(["id_Report" : randomString(length: 7), "descripcion" : self.inputBigDescription.text ?? "", "id_Empresa" : ModelData.shared.id_User, "id_Techie" : "", "id_Tech" : ""])
+        self.warningLbl.isHidden = true
+        if checkForExceptions() == false {
+            let users = self.db.collection("reportes")
+            users.document().setData(["id_Report" : randomString(length: 7), "descripcion" : self.inputBigDescription.text ?? "", "id_Empresa" : ModelData.shared.id_User, "id_Techie" : "", "id_Tech" : ""])
+            
+            warningLbl.isHidden = false;
+            warningLbl.text = "Report Sent."
+            warningLbl.textColor = UIColor.green
+            
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     func randomString(length: Int) -> String {
@@ -49,6 +60,19 @@ class GenerateReportViewController: UIViewController {
         }
 
         return randomString
+    }
+    
+    func checkForExceptions() -> Bool {
+        var returnValue = false
+        
+        if ((inputBigDescription.text == "") || (inputBigDescription.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Please write a quick description"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        }
+        
+        return returnValue
     }
 
 }

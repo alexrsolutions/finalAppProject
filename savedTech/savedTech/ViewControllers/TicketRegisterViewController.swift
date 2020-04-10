@@ -20,10 +20,14 @@ class TicketRegisterViewController: UIViewController {
     @IBOutlet weak var modeloInput: UITextField!
     @IBOutlet weak var procesadorInput: UITextField!
     @IBOutlet weak var almacenamientoInput: UITextField!
+    @IBOutlet weak var warningLbl: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        warningLbl.text = "";
+        warningLbl.isHidden = true;
+        
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
             navigationItem.leftBarButtonItem = backButton
 
@@ -38,12 +42,14 @@ class TicketRegisterViewController: UIViewController {
         
         idString = self.randomString(length: 7)
         
-        let image = generateQRCode(from: idString)
-        if let dataFromImage = image?.pngData() {
-            uploadToDatabase(data: dataFromImage)
-        }
+        warningLbl.isHidden = true;
         
-        dismiss(animated: true, completion: nil)
+        if checkForExceptions() == false {
+            let image = generateQRCode(from: idString)
+            if let dataFromImage = image?.pngData() {
+                uploadToDatabase(data: dataFromImage)
+            }
+        }
     }
     
     func uploadToDatabase(data: Data){
@@ -62,6 +68,8 @@ class TicketRegisterViewController: UIViewController {
                         let users = self.db.collection("tech")
                         
                         users.document().setData(["id_Tech" : self.idString, "marca" : self.marcaInput.text ?? "", "modelo" : self.modeloInput.text ?? "", "procesador" : self.procesadorInput.text ?? "", "almacenamiento" : self.almacenamientoInput.text ?? "", "urlQr" : self.idComputer, "rented" : false])
+                        
+                        self.dismiss(animated: true, completion: nil)
                         
                     }
                 }
@@ -100,14 +108,32 @@ class TicketRegisterViewController: UIViewController {
         return nil
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func checkForExceptions() -> Bool {
+        var returnValue = false
+        
+        if ((marcaInput.text == "") || (marcaInput.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Brand is empty, please complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((modeloInput.text == "") || (modeloInput.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Model Number is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((procesadorInput.text == "") || (procesadorInput.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Processor is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((almacenamientoInput.text == "") || (almacenamientoInput.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Storage is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        }
+        
+        return returnValue
     }
-    */
 
 }

@@ -24,6 +24,7 @@ class RegisterUserViewController: UIViewController {
     @IBOutlet weak var dropDown: DropDown!
     @IBOutlet weak var phoneReg: UITextField!
     @IBOutlet weak var addressReg: UITextField!
+    @IBOutlet weak var warningLbl: UILabel!
     
     var type_user: String = ""
     
@@ -33,6 +34,7 @@ class RegisterUserViewController: UIViewController {
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
         navigationItem.leftBarButtonItem = backButton
         
+        warningLbl.isHidden = true;
 
         // The list of array to display. Can be changed dynamically
         dropDown.optionArray = ["Client", "Technician", "Administrator"]
@@ -55,7 +57,7 @@ class RegisterUserViewController: UIViewController {
                 self.type_user = "admin"
                 break
             default:
-                self.type_user = "client"
+                self.type_user = ""
                 break
             }
         }
@@ -66,20 +68,30 @@ class RegisterUserViewController: UIViewController {
     }
     
     @IBAction func regsiterBtn(_ sender: Any) {
-        if let email = emailReg.text {
-            
-            Auth.auth().createUser(withEmail: email, password: "savedTech", completion: { user, error in
+        self.warningLbl.isHidden = true
+        if checkForExceptions() == false {
+            if let email = emailReg.text {
                 
-                if let firebaseError = error{
-                    print(firebaseError.localizedDescription)
-                    return
-                }
-                
-                let users = self.db.collection("users")
-                
-                users.document().setData(["email" : self.emailReg.text ?? "", "password" : "savedTech", "type_user" : self.type_user, "username" : self.nameReg.text ?? "", "empresa" : self.enterpriseReg.text ?? "", "id_User" : self.randomString(length: 7), "phone" : self.phoneReg.text ?? "", "address" : self.addressReg.text ?? ""])
-            })
+                Auth.auth().createUser(withEmail: email, password: "savedTech", completion: { user, error in
+                    
+                    if let firebaseError = error{
+                        print(firebaseError.localizedDescription)
+                        return
+                    }
+                    
+                    let users = self.db.collection("users")
+                    
+                    users.document().setData(["email" : self.emailReg.text ?? "", "password" : "savedTech", "type_user" : self.type_user, "username" : self.nameReg.text ?? "", "empresa" : self.enterpriseReg.text ?? "", "id_User" : self.randomString(length: 7), "phone" : self.phoneReg.text ?? "", "address" : self.addressReg.text ?? ""])
+                    
+                    self.warningLbl.isHidden = false;
+                    self.warningLbl.text = "User created"
+                    self.warningLbl.textColor = UIColor.green
+                    
+                    self.dismiss(animated: true, completion: nil)
+                })
+            }
         }
+        
     }
     
     func randomString(length: Int) -> String {
@@ -102,4 +114,41 @@ class RegisterUserViewController: UIViewController {
     }
     
 
+    func checkForExceptions() -> Bool {
+        var returnValue = false
+        
+        if ((emailReg.text == "") || (emailReg.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Email is empty, please complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((nameReg.text == "") || (nameReg.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Name is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((enterpriseReg.text == "") || (enterpriseReg.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Enterprise is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if (type_user == "") {
+            warningLbl.isHidden = false;
+            warningLbl.text = "User Type is missing, please select one"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((phoneReg.text == "") || (phoneReg.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Phone is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((addressReg.text == "") || (emailReg.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Address is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        }
+        
+        return returnValue
+    }
 }

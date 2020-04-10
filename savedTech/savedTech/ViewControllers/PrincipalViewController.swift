@@ -76,7 +76,6 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         NotificationCenter.default.addObserver(self, selector: #selector(seeTechies), name: Notification.Name("seeTechies"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(profile), name: Notification.Name("profile"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ticketsByTechie), name: Notification.Name("ticketsByTechie"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(closeSession), name: Notification.Name("closeSession"), object: nil)
         /*seeTechies*/
     }
     
@@ -147,7 +146,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     @objc func registerMachine(notification: NSNotification){
-        welcomeView.isHidden = true
+        welcomeView.isHidden = false
         guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "registerMachine") as? TicketRegisterViewController else {
             print("View controller could not be instantiated")
             return
@@ -159,7 +158,7 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     @objc func registerUsers(notification: NSNotification){
-        welcomeView.isHidden = true
+        welcomeView.isHidden = false
         
         guard let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "registerUser") as? RegisterUserViewController else {
             print("View controller could not be instantiated")
@@ -320,13 +319,13 @@ class PrincipalViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    @objc func closeSession(notification: NSNotification){
-        
+    @IBAction func cerrarSesion(_ sender: Any) {
         let firebaseAuth = Auth.auth()
         do {
-          try firebaseAuth.signOut()
+            try firebaseAuth.signOut()
+            self.dismiss(animated: true, completion: nil)
         } catch let signOutError as NSError {
-          print ("Error signing out: %@", signOutError)
+            print ("Error signing out: %@", signOutError)
         }
     }
     
