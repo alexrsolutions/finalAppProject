@@ -16,9 +16,12 @@ class GiveReviewViewController: UIViewController {
     let db = Firestore.firestore()
     
     @IBOutlet weak var reviewInput: UITextView!
+    @IBOutlet weak var warningLbl: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.warningLbl.isHidden = true
         
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(goBack))
         navigationItem.leftBarButtonItem = backButton
@@ -32,8 +35,14 @@ class GiveReviewViewController: UIViewController {
     }
 
     @IBAction func addReview(_ sender: Any) {
-        let users = self.db.collection("reviews")
-        users.document().setData(["id_Review" : randomString(length: 7), "id_User" : ModelData.shared.id_User, "review" : self.reviewInput.text ?? ""])
+        self.warningLbl.isHidden = true
+        
+        if checkForExceptions() == false {
+            let users = self.db.collection("reviews")
+            users.document().setData(["id_Review" : randomString(length: 7), "id_User" : ModelData.shared.id_User, "review" : self.reviewInput.text ?? ""])
+            self.dismiss(animated: true, completion: nil)
+        }
+        
     }
     
     func randomString(length: Int) -> String {
@@ -50,6 +59,19 @@ class GiveReviewViewController: UIViewController {
         }
 
         return randomString
+    }
+    
+    func checkForExceptions() -> Bool {
+        var returnValue = false
+        
+        if ((reviewInput.text == "") || (reviewInput.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Please write a quick description"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        }
+        
+        return returnValue
     }
 
 }

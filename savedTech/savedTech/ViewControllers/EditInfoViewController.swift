@@ -43,11 +43,13 @@ class EditInfoViewController: UIViewController {
     @IBOutlet weak var editReport: UIButton!
     @IBOutlet weak var techInCharge: UILabel!
     @IBOutlet weak var techInChargeDrop: DropDown!
+    @IBOutlet weak var warningLbl: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         getTechies()
+        warningLbl.isHidden = true
         
         techInChargeDrop.layer.borderWidth = 1.0
         techInChargeDrop.layer.borderColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
@@ -202,19 +204,62 @@ class EditInfoViewController: UIViewController {
     }
 
     @IBAction func updateReport(_ sender: Any) {
+        warningLbl.isHidden = true
         if isReport {
-            let reports = db.collection("reportes").document(documentId)
-            
-            reports.updateData([
-                "id_Techie": idTech ,
-                "descripcion" : textEditDescription.text ?? ""
-            ]) { err in
-                if let err = err {
-                    print("Error updating document: \(err)")
-                } else {
-                    print("Document successfully updated")
+            if checkForExceptions() == false {
+                let reports = db.collection("reportes").document(documentId)
+                
+                reports.updateData([
+                    "id_Techie": idTech ,
+                    "descripcion" : textEditDescription.text ?? ""
+                ]) { err in
+                    if let err = err {
+                        print("Error updating document: \(err)")
+                    } else {
+                        self.warningLbl.isHidden = false;
+                        self.warningLbl.text = "Update Succesfully"
+                        self.warningLbl.textColor = UIColor.red
+                        print("Document successfully updated")
+                    }
+                }
+            }
+        } else {
+            if checkForExceptions() == false {
+                let reports = db.collection("tickets").document(documentId)
+                
+                reports.updateData([
+                    "id_Techie": idTech ,
+                    "descripcion" : textEditDescription.text ?? ""
+                ]) { err in
+                    if let err = err {
+                        print("Error updating document: \(err)")
+                    } else {
+                        self.warningLbl.isHidden = false;
+                        self.warningLbl.text = "Update Succesfully"
+                        self.warningLbl.textColor = UIColor.red
+                        print("Document successfully updated")
+                    }
                 }
             }
         }
     }
+    
+    func checkForExceptions() -> Bool {
+        var returnValue = false
+        
+        if ((textEditDescription.text == "") || (textEditDescription.text == " ")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Description is empty, please complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        } else if ((idTech.isEmpty) || (idTech == "")) {
+            warningLbl.isHidden = false;
+            warningLbl.text = "Tech is missing, complete the input"
+            warningLbl.textColor = UIColor.red
+            returnValue = true
+        }
+        
+        return returnValue
+    }
+    
 }
