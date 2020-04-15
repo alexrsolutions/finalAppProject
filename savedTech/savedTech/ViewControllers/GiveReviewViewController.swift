@@ -66,7 +66,7 @@ class GiveReviewViewController: UIViewController {
         
         if ((reviewInput.text == "") || (reviewInput.text == " ")) {
             warningLbl.isHidden = false;
-            warningLbl.text = "Please write a quick description"
+            warningLbl.text = "Please write a quick review"
             warningLbl.textColor = UIColor.red
             returnValue = true
         }
